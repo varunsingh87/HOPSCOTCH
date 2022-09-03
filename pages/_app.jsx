@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { ConvexProvider, ConvexReactClient } from 'convex/react'
 import clientConfig from "../convex/_generated/clientConfig";
