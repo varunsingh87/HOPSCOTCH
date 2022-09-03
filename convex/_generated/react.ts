@@ -14,6 +14,7 @@ import type getCounter from "../getCounter";
 import type incrementCounter from "../incrementCounter";
 import type listCompetitions from "../listCompetitions";
 import type listMessages from "../listMessages";
+import type listSubmissions from "../listSubmissions";
 import type sendMessage from "../sendMessage";
 import type { OptimisticLocalStore as GenericOptimisticLocalStore } from "convex/browser";
 import type { ClientMutation, ClientQuery } from "convex/server";
@@ -32,6 +33,7 @@ export type ConvexAPI = {
     getCounter: ClientQuery<typeof getCounter>;
     listCompetitions: ClientQuery<typeof listCompetitions>;
     listMessages: ClientQuery<typeof listMessages>;
+    listSubmissions: ClientQuery<typeof listSubmissions>;
   };
   mutations: {
     addCompetition: ClientMutation<typeof addCompetition>;
