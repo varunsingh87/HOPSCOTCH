@@ -1,7 +1,5 @@
 # Convex PennApps starter project
 
-join this devpost link: https://devpost.com/software/musathon/joins/LRtyGS7WA6bAENN6oKZRfw
-
 This is a starter web application that uses Convex to store persistent data.
 
 Convex is a combined database and backend that provides live updates so your website doesn’t have to poll API endpoints and your users don’t have to refresh the page. Convex requires writing short query and mutation functions in JavaScript or TypeScript (analogous to SQL queries) then pushing these to the Convex server. These functions can then be invoked by a web application.
