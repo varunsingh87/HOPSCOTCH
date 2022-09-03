@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "../convex/_generated/react";
 
-
 // Render a chat message.
 function MessageView(props) {
   const message = props.message;
@@ -12,7 +11,7 @@ function MessageView(props) {
   );
 }
 
-export default function App() {
+export default function chat() {
   // Dynamically update `messages` in response to the output of
   // `listMessages.ts`.
   const messages = useQuery("listMessages") || [];
@@ -35,7 +34,7 @@ export default function App() {
   }
   return (
     <>
-      <h1 className="text-center">Convex Chat</h1>
+      <h1 className="text-center">Musathon Chat</h1>
       <p className="text-center">
         <span className="badge bg-dark">{name}</span>
       </p>
