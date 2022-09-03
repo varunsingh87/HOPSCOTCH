@@ -28,12 +28,6 @@ Now you can initialize a new Convex project,
 npx convex init
 ```
 
-and push the Convex functions for this project.
-
-```bash
-npx convex push
-```
-
 All that's left to do is to run your code locally with a Convex backend with
 
 ```bash
