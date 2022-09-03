@@ -27,13 +27,14 @@ export default function App(props) {
     const [description, setDescription] = useState("")
 
     async function handleAddCompetition(event) {
+        event.preventDefault()
         setNewCompetitionName(""); // reset text entry box
         setAccess(Access.INITIAL)
         setLocationCategory("")
         setTotalPrizeValue(500)
         setPrizeList([])
         setDescription("")
-        addCompetition({ name: newCompetitionName, organizer: user, access, prizeList, address, description, locationCategory, totalPrizeValue });
+        await addCompetition({ name: newCompetitionName, organizer: user, access, prizeList, address, description, locationCategory, totalPrizeValue, thumbnail: 'https://picsum.photos/318/180' });
         router.push('/')
     }
 
