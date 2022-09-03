@@ -12,6 +12,7 @@
     "convex": "latest",
     "next": "latest",
     "react": "^18.2.0",
+    "react-bootstrap-icons": "^1.8.4",
     "react-dom": "^18.2.0",
     "reactstrap": "^9.1.4"
   },
