@@ -3,5 +3,10 @@
   "team": "compeworld",
   "prodUrl": "https://moonlit-whale-752.convex.cloud",
   "functions": "convex/",
-  "authInfo": []
+  "authInfo": [
+    {
+      "domain": "https://dev-07h014ol.us.auth0.com",
+      "applicationID": "gLxomYQnyp341y6zFxtbp4MdVa35kJT4"
+    }
+  ]
 }
