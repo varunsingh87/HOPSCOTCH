@@ -60,15 +60,10 @@ export default function App() {
             <p className="text-center">
                 <span className="badge bg-dark">{name}</span>
             </p>
-            <Row>
-                <Col sm="10">
-                    <FormGroup floating>
-                        <Input type="search" placeholder="Search" name="searchCompetitions" id="searchCompetitions" />
-                        <Label for="searchCompetitions">Search Competitions</Label>
-                    </FormGroup>
-                </Col>
-                <Col sm="2"><Search /></Col>
-            </Row>
+            <FormGroup floating>
+                <Input type="search" placeholder="Search" name="searchCompetitions" id="searchCompetitions" />
+                <Label for="searchCompetitions">Search Competitions</Label>
+            </FormGroup>
             <CardGroup className="my-3">
                 {competitions.slice(-10).map((competition) => (
                     <CompetitionView key={competition._id} {...competition} />
