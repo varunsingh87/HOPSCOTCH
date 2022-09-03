@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bootstrap": "^5.2.0",
     "convex": "latest",
     "next": "latest",
