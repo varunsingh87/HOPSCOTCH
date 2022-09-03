@@ -10,11 +10,12 @@
  */
 
 import type addCompetition from "../addCompetition";
+import type addSubmission from "../addSubmission";
 import type getCounter from "../getCounter";
 import type incrementCounter from "../incrementCounter";
 import type listCompetitions from "../listCompetitions";
 import type listMessages from "../listMessages";
-import type listSubmissions from "../listSubmissions";
+import type listSubmission from "../listSubmission";
 import type sendMessage from "../sendMessage";
 import type { OptimisticLocalStore as GenericOptimisticLocalStore } from "convex/browser";
 import type { ClientMutation, ClientQuery } from "convex/server";
@@ -33,10 +34,11 @@ export type ConvexAPI = {
     getCounter: ClientQuery<typeof getCounter>;
     listCompetitions: ClientQuery<typeof listCompetitions>;
     listMessages: ClientQuery<typeof listMessages>;
-    listSubmissions: ClientQuery<typeof listSubmissions>;
+    listSubmission: ClientQuery<typeof listSubmission>;
   };
   mutations: {
     addCompetition: ClientMutation<typeof addCompetition>;
+    addSubmission: ClientMutation<typeof addSubmission>;
     incrementCounter: ClientMutation<typeof incrementCounter>;
     sendMessage: ClientMutation<typeof sendMessage>;
   };
