@@ -9,6 +9,7 @@
     "@sendgrid/mail": "^7.7.0",
     "bootstrap": "^5.2.0",
     "convex": "latest",
+    "mdb-react-ui-kit": "^4.2.0",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
