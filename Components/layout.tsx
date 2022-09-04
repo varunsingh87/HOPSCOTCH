@@ -1,5 +1,5 @@
 import { Container } from "reactstrap";
-import { Logout } from "../Lib/account-auth"
+import { Logout } from "../lib/account-auth"
 import { useEffect, useState } from "react"
 import { Document, Id } from "../convex/_generated/dataModel";
 import { useMutation } from "../convex/_generated/react";
@@ -29,7 +29,9 @@ export function Layout(props: any) {
           <Logout ></Logout>
         </div>
       </div>
-      {props.children}
+      <Container className="mt-2">
+        <div style={{clear: 'right'}}>{props.children}</div>
+      </Container>
     </div>
   );
 }
