@@ -50,9 +50,11 @@ export default function Profile() {
     const storeUser = useMutation("storeUser");
 
     useEffect(() => {
-        console.log(userbio)
-        setBio(userbio)
-    }, [])
+        if (userbio === undefined) {
+            return;
+        }
+        setBio(userbio);
+    }, [userbio]);
 
     async function saveBio() {
         await storeUser(bio)
@@ -64,7 +66,7 @@ export default function Profile() {
                 <img src="https://picsum.photos/300/300" width="200" height="200" className="rounded-circle float-start pt-3" />
                 <div className="d-flex flex-column ms-5 me-auto">
                     <h1 className="display-1">Varun Singh</h1>
-                    <textarea value={bio} onChange={(e) => setBio(e.target.value)} cols="100" className="form-control"></textarea>
+                    <textarea placeholder="Write a short bio here" value={bio} onChange={(e) => setBio(e.target.value)} cols="100" className="form-control"></textarea>
                     <button className="mt-1 btn btn-success btn-sm" onClick={() => saveBio()}>Save<Check /></button>
                 </div>
             </div>
