@@ -12,10 +12,10 @@ function MessageView(props) {
   );
 }
 
-export default function chat() {
+export default function Chat(props) {
   // Dynamically update `messages` in response to the output of
   // `listMessages.ts`.
-  const messages = useQuery("listMessages") || [];
+  const messages = useQuery("listMessages", props.competitionID) || [];
 
   const [name, setName] = useState('user name');
   useEffect(() => {
@@ -28,13 +28,14 @@ export default function chat() {
   // `handleSendMessage` triggered.
   const [newMessageText, setNewMessageText] = useState("");
   const sendMessage = useMutation("sendMessage");
+  const competition = props.competitionID;  //varun name this competitionID ~ Aditya B.
   async function handleSendMessage(event) {
     event.preventDefault();
     setNewMessageText(""); // reset text entry box
-    await sendMessage(newMessageText, name);
+    await sendMessage(newMessageText, name, competition);
   }
   return (
-    <>
+    <div>
       <h1 className="text-center">Musathon Chat</h1>
  
       <p className="text-center">
@@ -72,6 +73,6 @@ export default function chat() {
           disabled={!newMessageText}
         />
       </form>
-    </>
+    </div>
   );
 }

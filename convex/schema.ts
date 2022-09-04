@@ -5,6 +5,7 @@ export default defineSchema({
   messages: defineTable({
     author: s.string(),
     body: s.string(),
+    competition: s.string()
   }),
   counters: defineTable({
     name: s.string(),
