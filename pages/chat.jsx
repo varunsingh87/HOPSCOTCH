@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "../convex/_generated/react";
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // Render a chat message.
 function MessageView(props) {
@@ -35,9 +36,11 @@ export default function chat() {
   return (
     <>
       <h1 className="text-center">Musathon Chat</h1>
+ 
       <p className="text-center">
         <span className="badge bg-dark">{name}</span>
       </p>
+      <PerfectScrollbar>
       <ul className="list-group shadow-sm my-3">
         {messages.slice(-10).map((message) => (
           <li
@@ -51,6 +54,7 @@ export default function chat() {
           </li>
         ))}
       </ul>
+      </PerfectScrollbar>
       <form
         onSubmit={handleSendMessage}
         className="d-flex justify-content-center"

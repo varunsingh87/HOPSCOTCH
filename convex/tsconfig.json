@@ -23,6 +23,6 @@
   "include": [
     "./**/*",
     "..\\node_modules\\convex\\dist\\esm\\environment\\index.d.ts"
-  ],
+, "../pages/chat.jsx"  ],
   "exclude": ["./_generated"]
 }

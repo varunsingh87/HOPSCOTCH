@@ -23,11 +23,15 @@ export function Layout(props: any) {
   }, [storeUser]);
 
   return (
-    <Container className="my-3">
-      <div className="container float-end">
-        <Logout ></Logout>
+    <div>
+      <div className="d-flex flex-row-reverse">
+        <div className="me-3 mt-2" style={{position: "absolute"}}>
+          <Logout ></Logout>
+        </div>
       </div>
-      <div style={{clear: 'right'}}>{props.children}</div>
-    </Container>
+      <Container className="mt-2">
+        <div style={{clear: 'right'}}>{props.children}</div>
+      </Container>
+    </div>
   );
 }
