@@ -3,7 +3,7 @@ import { Check } from "react-bootstrap-icons";
 import { useMutation } from "../convex/_generated/react";
 
 export default function Profile() {
-    // const userbio = useQuery("getUserBio");
+    const userbio = useQuery("getUserBio");
     const [bio, setBio] = useState(
         "Sample Bio: I am very enthusiastic about Hackathons, and since I also love the Piano and Composing, I was very happy when I found this fully functional and bug free site that hosts music competitions.");
     const storeUser = useMutation("storeUser");
