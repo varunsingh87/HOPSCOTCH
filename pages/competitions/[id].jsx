@@ -123,7 +123,7 @@ export default function App(props) {
                     </TabPane>
                 </TabContent>
             </div>
-        </div >
+        </div>
     )
 }
 

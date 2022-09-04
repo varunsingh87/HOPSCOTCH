@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { GeoAlt } from "react-bootstrap-icons";
 import { Card, CardBody, CardGroup, CardImg, CardSubtitle, CardTitle, Container, FormGroup, Input, Label } from "reactstrap";
@@ -38,7 +39,8 @@ export default function App() {
     // Dynamically update `competitions` in response to the output of
     // `listCompetitions.ts`.
     const competitions = useQuery("listCompetitions") || [];
-    const [searchQuery, setSearchQuery] = useState("")
+
+    const router = useRouter()
 
     return (
         <Container className="my-lg-4">
@@ -46,12 +48,8 @@ export default function App() {
                 <title>Browse Competitions</title>
             </Head>
             <h1 className="text-center">Competitions</h1>
-            <FormGroup floating>
-                <Input type="search" placeholder="Search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} name="searchCompetitions" id="searchCompetitions" />
-                <Label for="searchCompetitions">Search Competitions</Label>
-            </FormGroup>
             <CardGroup className="my-3">
-                {competitions.filter(item => item.name?.includes(searchQuery) || item.description?.includes(searchQuery)).map((competition) => (
+                {competitions.filter(item => !router.query.q || item.name?.includes(router.query.q) || item.description?.includes(router.query.q)).map((competition) => (
                     <CompetitionView key={competition._id} {...competition} />
                 ))}
             </CardGroup>
