@@ -24,9 +24,9 @@ export function Login() {
     return (
       <div className="float-end">
         {/* We know this component only renders if the user is logged in. */}
-        <p>Logged in{user!.name ? ` as ${user!.name}` : ""}</p>
+        {/* <p>Logged in{user!.name ? ` as ${user!.name}` : ""}</p> */}
         <button
-          className="btn btn-primary float-end"
+          className="btn btn-secondary float-end"
           onClick={() => logout({ returnTo: window.location.origin })}
         >
           Log out

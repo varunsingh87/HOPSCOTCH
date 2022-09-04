@@ -10,7 +10,7 @@ import styles from "../styles/Home.module.css"
 function CompetitionView(props) {
     const startDate = new Date(props._creationTime).toLocaleDateString()
     return (
-        <Card style={{ flexBasis: '300px' }} className="p-3">
+        <Card style={{ flexBasis: '350px', flexGrow: 0 }} className="mb-3 p-3 border">
             <Link href={`/competitions/${props._id}`} >
                 <a style={{ textDecoration: 'none', color: 'unset' }}>
                     <CardImg
@@ -46,7 +46,6 @@ export default function App() {
             <Head>
                 <title>Browse Competitions</title>
             </Head>
-            <Link href="/new-competition"><a className="btn btn-primary outline">Add Competition</a></Link>
             <h1 className="text-center">Competitions</h1>
             <FormGroup floating>
                 <Input type="search" placeholder="Search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} name="searchCompetitions" id="searchCompetitions" />
