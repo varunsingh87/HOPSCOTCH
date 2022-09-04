@@ -1,18 +1,17 @@
-import { GenericId } from "@convex-dev/common";
 import classnames from "classnames";
 import { ConvexHttpClient } from "convex/browser";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Button, Col, Container, Input, List, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
+import { Col, Container, List, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import clientConfig from "../../convex/_generated/clientConfig";
-import { useMutation, useQuery } from '../../convex/_generated/react';
+import { useQuery } from '../../convex/_generated/react';
 
 const convex = new ConvexHttpClient(clientConfig);
 
 export default function App(props) {
-    const participants = useQuery('listParticipants', props.id)
+    // const participants = useQuery('listParticipants', props.id)
     const [activeTab, setActiveTab] = useState(1)
 
     const toggle = tab => {
@@ -124,7 +123,7 @@ export default function App(props) {
                         {JSON.stringify(props.prizeList)}
                     </TabPane>
                     <TabPane tabId={4}>
-                        {JSON.stringify(participants)}
+                        {/* {JSON.stringify(participants)} */}
                     </TabPane>
                 </TabContent>
             </div>
