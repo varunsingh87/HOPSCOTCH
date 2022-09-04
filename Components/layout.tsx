@@ -33,7 +33,7 @@ export function Layout(props: any) {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ms-5 me-auto align-items-center" navbar> 
             <NavItem>
-              <Link href="/"><NavLink href="/">Browse Musathon</NavLink></Link>
+              <Link href="/"><NavLink href="/">Browse Musathons</NavLink></Link>
             </NavItem>
             <NavItem>
               <Link href="/new-competition"><NavLink href="/new-competition">Host a Musathon</NavLink></Link>
