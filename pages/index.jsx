@@ -10,32 +10,28 @@ import styles from "../styles/Home.module.css"
 function CompetitionView(props) {
     const startDate = new Date(props._creationTime).toLocaleDateString()
     return (
-        <Col sm="6">
-            <Card className="px-3 py-3 m-2" outline>
-                <CardImg
-                    alt="Card image cap"
-                    src="https://picsum.photos/318/180"
-                    top
-                    width="100%"
-                />
-                <CardTitle>{props.name}</CardTitle>
-                <CardSubtitle
-                    className="mb-2 text-muted"
-                    tag="h6"
-                >
-                    {props.description || <span style={{ fontStyle: 'italic' }}>No description provided</span>}
-                </CardSubtitle>
-                <CardBody>
-                    <Col className="col-6">
+        <Card style={{ flexBasis: '350px', flexGrow: 0 }} className="mb-3 p-3 border">
+            <Link href={`/competitions/${props._id}`} >
+                <a style={{ textDecoration: 'none', color: 'unset' }}>
+                    <CardImg
+                        alt="Card image cap"
+                        src={props.thumbnail || 'https://picsum.photos/318/181'}
+                    />
+                    <CardTitle tag="h1">{props.name}</CardTitle>
+                    <CardSubtitle
+                        className="mb-2 text-muted"
+                        tag="h6"
+                    >
+                        {props.description || <span style={{ fontStyle: 'italic' }}>No description provided</span>}
+                    </CardSubtitle>
+                    <CardBody>
                         <p><GeoAlt /> {props.locationCategory}, {props.access}</p>
                         <p>${props.totalPrizeValue} in Prizes</p>
-                    </Col>
-                    <Col className="col-6">
                         <h2><strong>32</strong> participants</h2>
-                    </Col>
-                </CardBody>
-            </Card>
-        </Col>
+                    </CardBody>
+                </a>
+            </Link>
+        </Card>
     );
 }
 
@@ -55,7 +51,6 @@ export default function App() {
             <Head>
                 <title>Browse Competitions</title>
             </Head>
-            <Link href="/new-competition"><a className="btn btn-primary outline">Add Competition</a></Link>
             <h1 className="text-center">Competitions</h1>
             <p className="text-center">
                 <span className="badge bg-dark">{name}</span>

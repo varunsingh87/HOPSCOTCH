@@ -1,4 +1,11 @@
+import { useAuth0 } from "@auth0/auth0-react";
+import { Button } from "bootstrap";
 import React from "react"
+import { useEffect, useState } from "react"
+import { TextArea } from "react-bootstrap-icons";
+import EditableText from "../Components/editableText"
+import { useQuery, useMutation } from "../convex/_generated/react";
+
 
 function SubmissionViewer() {
     return (
@@ -36,13 +43,27 @@ function SubmissionsList() {
 }
 
 export default function Profile() {
+    const userbio = useQuery("getUserBio");
+    const [bio, setBio] = useState("null");
+    const storeUser = useMutation("storeUser");
+
+    useEffect(() => {
+        console.log(userbio)
+        setBio(userbio)
+    }, [])
+
+    async function saveBio() {
+        await storeUser(bio)
+    }
+
     return (
         <div>
             <div className="d-flex flex-row">
                 <img src="https://picsum.photos/300/300" width="200" height="200" className="rounded-circle float-start pt-3" />
                 <div className="d-flex flex-column ms-5 me-auto">
                     <h1 className="display-1">FName LName</h1>
-                    <p>Bitters farm-to-table letterpress, 90's celiac pok pok pork belly raw denim pitchfork post-ironic big mood listicle tousled fingerstache synth. Post-ironic meditation unicorn, health goth gluten-free retro asymmetrical seitan coloring book DSA ramps chicharrones hammock kale chips synth. Hella enamel pin post-ironic brunch, butcher taiyaki JOMO humblebrag cardigan dreamcatcher. PBR&B viral next level distillery vinyl. Migas distillery kickstarter taxidermy sartorial jean shorts craft beer, vape hella.</p>
+                    <textarea value={bio} onChange={(e) => setBio(e.target.value)} cols="100" className="form-control"></textarea>
+                    <button onClick={() => saveBio()}>Save</button>
                 </div>
             </div>
             <SubmissionsList />

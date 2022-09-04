@@ -1,43 +1,86 @@
-import { useRouter } from "next/router"
+import classnames from "classnames";
 import { ConvexHttpClient } from "convex/browser";
+import Head from "next/head";
+import { useState } from "react";
+import { Button, Card, CardText, CardTitle, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import clientConfig from "../../convex/_generated/clientConfig";
-import Head from "next/head"
-import { TabPane } from "reactstrap"
+import { useQuery } from '../../convex/_generated/react';
 
 const convex = new ConvexHttpClient(clientConfig);
 
 export default function App(props) {
-    const router = useRouter()
+    const participants = useQuery('listParticipants', props.id)
+    const [activeTab, setActiveTab] = useState(1)
+
+    const toggle = tab => {
+        if (activeTab !== tab)
+            setActiveTab(tab)
+    }
+
     return (
         <div>
             <Head>
                 <title>{props.name} | Musathon</title>
             </Head>
-            <h1>{props.name}</h1>
-            <div>
+            <Container className="text-center">
+                <h1>{props.name}</h1>
+                <div className="btn btn-outline-primary">Register for Competition</div>
+            </Container>
+
+            <div className="mt-3">
                 <Nav tabs>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: this.state.activeTab === '1' })}
-                            onClick={() => { this.toggle('1'); }}
+                            className={classnames({ active: activeTab === 1 })}
+                            onClick={() => { toggle(1); }}
+                            style={{ cursor: 'pointer' }}
                         >
-                            Tab1
+                            Overview
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: this.state.activeTab === '2' })}
-                            onClick={() => { this.toggle('2'); }}
+                            className={classnames({ active: activeTab === 2 })}
+                            onClick={() => { toggle(2); }}
+                            style={{ cursor: 'pointer' }}
                         >
-                            Moar Tabs
+                            Rules
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={classnames({ active: activeTab === 3 })}
+                            onClick={() => { toggle(3); }}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            Prizes
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={classnames({ active: activeTab === 4 })}
+                            onClick={() => { toggle(4); }}
+                            style={{ cursor: 'pointer' }}>
+                            Participants
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={classnames({ active: activeTab === 5 })}
+                            onClick={() => { toggle(5); }}
+                            style={{ cursor: 'pointer' }}>
+                            Music Gallery
                         </NavLink>
                     </NavItem>
                 </Nav>
-                <TabContent activeTab={this.state.activeTab}>
+                <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
                         <Row>
-                            <Col sm="12">
-                                <h4>Tab 1 Contents</h4>
+                            <Col sm="8">
+                                <p>{props.description}</p>
+                            </Col>
+                            <Col sm="4">
+                                <img src={props.thumbnail} height="100" width="100" />
                             </Col>
                         </Row>
                     </TabPane>
@@ -58,6 +101,12 @@ export default function App(props) {
                                 </Card>
                             </Col>
                         </Row>
+                    </TabPane>
+                    <TabPane tabId="3">
+
+                    </TabPane>
+                    <TabPane tabId="4">
+                        {JSON.stringify(participants)}
                     </TabPane>
                 </TabContent>
             </div>

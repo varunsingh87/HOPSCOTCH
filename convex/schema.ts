@@ -5,6 +5,7 @@ export default defineSchema({
   messages: defineTable({
     author: s.string(),
     body: s.string(),
+    competition: s.string()
   }),
   counters: defineTable({
     name: s.string(),
@@ -17,16 +18,14 @@ export default defineSchema({
     bio: s.string()
   }),
   competitions: defineTable({
-    competition: s.object({
-      name: s.string(), 
-      organizer: s.string(), 
-      access: s.string(), 
-      prizeList: s.array(s.string()), 
-      address: s.string(), 
-      description: s.string(), 
-      locationCategory: s.string(), 
-      totalPrizeValue: s.number() 
-    })
+    name: s.string(), 
+    organizer: s.string(), 
+    access: s.string(), 
+    prizeList: s.array(s.string()), 
+    address: s.string(), 
+    description: s.string(), 
+    locationCategory: s.string(), 
+    totalPrizeValue: s.number() 
   }),
   submissions: defineTable({
     submission: s.object({

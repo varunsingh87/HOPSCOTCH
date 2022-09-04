@@ -1,4 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { useRouter } from 'next/router';
 
 export function Login() {
     const { isLoading, loginWithRedirect } = useAuth0();
@@ -7,7 +8,7 @@ export function Login() {
     }
     return (
       <main className="py-4">
-        <h1 className="text-center">Convex Chat</h1>
+        <h1 className="text-center">Musathon</h1>
         <div className="text-center">
           <span>
             <button className="btn btn-primary" onClick={loginWithRedirect}>
@@ -20,13 +21,15 @@ export function Login() {
   }
 
   export function Logout() {
+    const router = useRouter();
     const { logout, user } = useAuth0();
     return (
       <div className="float-end">
         {/* We know this component only renders if the user is logged in. */}
-        <p>Logged in{user!.name ? ` as ${user!.name}` : ""}</p>
+        {/* <p>Logged in{user!.name ? ` as ${user!.name}` : ""}</p> */}
+        <img onClick={() => router.push("/profile")} src="https://picsum.photos/300/300" width="35" height="35" className="rounded-circle float-start me-3" />
         <button
-          className="btn btn-primary float-end"
+          className="btn btn-secondary float-end"
           onClick={() => logout({ returnTo: window.location.origin })}
         >
           Log out
