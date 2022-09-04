@@ -30,7 +30,7 @@ export function Layout(props: any) {
         </div>
       </div>
       <Container className="mt-2">
-        <div style={{clear: 'right'}}>{props.children}</div>
+        {props.children}
       </Container>
     </div>
   );
