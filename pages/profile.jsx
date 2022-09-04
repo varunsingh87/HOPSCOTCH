@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Check } from "react-bootstrap-icons";
-import { useMutation } from "../convex/_generated/react";
+import { useQuery, useMutation } from "../convex/_generated/react";
 
 export default function Profile() {
     const userbio = useQuery("getUserBio");
