@@ -20,7 +20,7 @@ export default function Profile() {
                 <div className="d-flex flex-column ms-5 me-auto">
                     <h1 className="display-1">Varun Singh</h1>
                     <textarea value={bio} onChange={(e) => setBio(e.target.value)} cols="100" className="form-control"></textarea>
-                    {/* <button className="mt-1 btn btn-success btn-sm" onClick={() => storeUser(bio)}>Save<Check /></button> */}
+                    <button className="mt-1 btn btn-success btn-sm" onClick={() => storeUser(bio)}>Save<Check /></button>
                 </div>
             </div>
             <SubmissionsList />
