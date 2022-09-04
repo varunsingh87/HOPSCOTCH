@@ -48,7 +48,6 @@ export function Layout(props: any) {
         
       </Navbar>
       <Container>{props.children}</Container>
-      
     </div>
   );
 }
