@@ -1,8 +1,12 @@
 import React from 'react';
+import { ConvexHttpClient } from "convex/browser";
 import { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText, Container } from 'reactstrap';
 import { useMutation } from "../../../convex/_generated/react";
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import clientConfig from "../../../convex/_generated/clientConfig";
+
+const convex = new ConvexHttpClient(clientConfig);
 
 export default function App(props) {
   const [title, setTitle] = useState("");
@@ -54,4 +58,23 @@ export default function App(props) {
       </Form>
     </Container>
   );
+}
+
+export async function getStaticProps(context) {
+  const submission = await convex.query("getSubmission")(context.params.id)
+  submission.id = submission._id = submission._id.id
+
+  return { props: submission }
+}
+
+export async function getStaticPaths() {
+  const submissions = await convex.query("listSubmissions")();
+  return {
+    paths: submissions.map(item => {
+      return {
+        params: { id: item._id.id }
+      }
+    }),
+    fallback: false
+  }
 }

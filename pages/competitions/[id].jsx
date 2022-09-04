@@ -1,12 +1,13 @@
+import { GenericId } from "@convex-dev/common";
 import classnames from "classnames";
 import { ConvexHttpClient } from "convex/browser";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { Button, Card, CardText, CardTitle, Col, List, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Input } from "reactstrap";
+import { Button, Col, Container, Input, List, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import clientConfig from "../../convex/_generated/clientConfig";
 import { useMutation, useQuery } from '../../convex/_generated/react';
-import { GenericId } from "@convex-dev/common";
 
 const convex = new ConvexHttpClient(clientConfig);
 
@@ -21,6 +22,9 @@ export default function App(props) {
 
     const [thumbnail, setThumbnail] = useState(props.thumbnail)
     const updateCompetitionThumbnail = useMutation('updateThumbnail')
+    const deleteCompetition = useMutation('deleteCompetition')
+
+    const router = useRouter()
 
     return (
         <div>
@@ -29,7 +33,7 @@ export default function App(props) {
             </Head>
             <Container className="text-center">
                 <h2>{props.name}</h2>
-                <Link href="/submission"><a className="btn btn-outline-primary">Enter Submission</a></Link>
+                <Link href={`/submissions/new?competition=${props.id}`}><a className="btn btn-outline-primary">Enter Submission</a></Link>
             </Container>
 
             <div className="mt-3">
@@ -92,6 +96,7 @@ export default function App(props) {
                                         updateCompetitionThumbnail(new GenericId('competitions', props.id), thumbnail)
                                     }
                                 }}>{props.name}</Input>
+                                <Button onClick={() => { deleteCompetition(new GenericId('competitions', props.id)); router.back() }} className="btn btn-danger">Delete Competition</Button>
                             </Col>
                         </Row>
                     </TabPane>
