@@ -24,8 +24,10 @@ export function Layout(props: any) {
 
   return (
     <div>
-      <div className="container float-end">
-        <Logout ></Logout>
+      <div className="d-flex flex-row-reverse">
+        <div className="me-3 mt-2" style={{position: "absolute"}}>
+          <Logout ></Logout>
+        </div>
       </div>
       {props.children}
     </div>
