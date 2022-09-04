@@ -27,7 +27,7 @@ function CompetitionView(props) {
                     <CardBody>
                         <p><GeoAlt /> {props.locationCategory}, {props.access}</p>
                         <p>${props.totalPrizeValue} in Prizes</p>
-                        <h2><strong>32</strong> participants</h2>
+                        <h2><strong>{Math.round(Math.random() * 32) + 60}</strong> participants</h2>
                     </CardBody>
                 </a>
             </Link>
@@ -53,6 +53,6 @@ export default function App() {
                     <CompetitionView key={competition._id} {...competition} />
                 ))}
             </CardGroup>
-        </Container >
+        </Container>
     );
 }
