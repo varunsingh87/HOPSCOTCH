@@ -2,30 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Check } from "react-bootstrap-icons";
 import { useQuery, useMutation } from "../convex/_generated/react";
 
-export default function Profile() {
-    // const userbio = useQuery("getUserBio");
-    const [bio, setBio] = useState("Loading Bio...");
-    const storeUser = useMutation("storeUser");
-
-    // useEffect(() => {
-    //     setBio(userbio)
-    // }, [])
-
-    return (
-        <div>
-            <div className="d-flex flex-row mb-4">
-                <img src="https://picsum.photos/300/300" width="200" height="200" className="rounded-circle float-start pt-3" />
-                <div className="d-flex flex-column ms-5 me-auto">
-                    <h1 className="display-1">Varun Singh</h1>
-                    <textarea value={bio} onChange={(e) => setBio(e.target.value)} cols="100" className="form-control"></textarea>
-                    <button className="mt-1 btn btn-success btn-sm" onClick={() => storeUser(bio)}>Save<Check /></button>
-                </div>
-            </div>
-            <SubmissionsList />
-        </div>
-    );
-}
-
 function SubmissionViewer() {
     return (
         <div class="card">
