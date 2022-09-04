@@ -21,7 +21,7 @@ export default mutation(async ({ db, auth }, bio: string=""): Promise<Id<"users"
     if (user.pictureURL != identity.pictureUrl) {
         db.patch<"users">(user._id, { pictureURL: identity.pictureUrl! });
     }
-    if (user.bio != bio) {
+    if (user.bio != bio && bio != "") {
         db.patch<"users">(user._id, { bio: bio! });
     }
     return user._id;
