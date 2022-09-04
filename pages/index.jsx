@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import { Card, CardBody, CardGroup, CardTitle, Input, Label, CardImg, CardSubtitle, FormGroup, Button, Container, Col, Row } from "reactstrap";
-import { GeoAlt, Search } from "react-bootstrap-icons"
-import { useMutation, useQuery } from "../convex/_generated/react";
-import Head from "next/head"
+import Head from "next/head";
 import Link from "next/link";
-import styles from "../styles/Home.module.css"
+import { useState } from "react";
+import { GeoAlt } from "react-bootstrap-icons";
+import { Card, CardBody, CardGroup, CardImg, CardSubtitle, CardTitle, Container, FormGroup, Input, Label } from "reactstrap";
+import { useQuery } from "../convex/_generated/react";
 
 // Render a competition preview
 function CompetitionView(props) {

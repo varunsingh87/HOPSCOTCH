@@ -2,7 +2,8 @@ import { Container, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink ,C
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem} from "reactstrap";
+  DropdownItem,
+  NavbarText} from "reactstrap";
 import { Logout } from "../lib/account-auth"
 import { useEffect, useState } from "react"
 import { Document, Id } from "../convex/_generated/dataModel";
@@ -26,21 +27,26 @@ export function Layout(props: any) {
     return () => setUserId(null);
   }, [storeUser]);
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+
   return (
     <div>
-      <Navbar>
-        <NavbarBrand href="/" ><h1><img alt='logo' height={120} src="https://media.discordapp.net/attachments/896181221200113735/1015839374727979019/logo.PNG"></img>Musathon</h1></NavbarBrand>
-        <Nav className="me-auto" navbar> 
-        <NavItem>
-                <NavLink href="/">Browse Musathons</NavLink>
-              </NavItem>
-              </Nav>
-              <Nav  navbar>
-              <NavItem className="justify-content-center">
-                <NavLink href="/new-competition">Host a Musathon</NavLink>
-              </NavItem>
-              </Nav>
-        <Logout />
+      <Navbar color="light" light expand="md" container="fluid">
+        <NavbarBrand href="/" ><img alt='logo' height={120} src="/Musathon_Logo.png"></img>Musathon</NavbarBrand>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>
+          <Nav className="me-auto" navbar> 
+            <NavItem>
+              <Link href="/"><NavLink href="/">Browser Musathon</NavLink></Link>
+            </NavItem>
+            <NavItem className="justify-content-center">
+              <Link href="/new-competition"><NavLink href="/new-competition">Host a Musathon</NavLink></Link>
+            </NavItem>
+          </Nav>
+            <Logout />
+        </Collapse> 
         
       </Navbar>
       <Container>{props.children}</Container>

@@ -1,10 +1,12 @@
 import classnames from "classnames";
 import { ConvexHttpClient } from "convex/browser";
 import Head from "next/head";
+import Link from "next/link";
 import { useState } from "react";
-import { Button, Card, CardText, CardTitle, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
+import { Button, Card, CardText, CardTitle, Col, List, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Input } from "reactstrap";
 import clientConfig from "../../convex/_generated/clientConfig";
-import { useQuery } from '../../convex/_generated/react';
+import { useMutation, useQuery } from '../../convex/_generated/react';
+import { GenericId } from "@convex-dev/common";
 
 const convex = new ConvexHttpClient(clientConfig);
 
@@ -17,14 +19,17 @@ export default function App(props) {
             setActiveTab(tab)
     }
 
+    const [thumbnail, setThumbnail] = useState(props.thumbnail)
+    const updateCompetitionThumbnail = useMutation('updateThumbnail')
+
     return (
         <div>
             <Head>
                 <title>{props.name} | Musathon</title>
             </Head>
             <Container className="text-center">
-                <h1>{props.name}</h1>
-                <div className="btn btn-outline-primary">Register for Competition</div>
+                <h2>{props.name}</h2>
+                <Link href="/submission"><a className="btn btn-outline-primary">Enter Submission</a></Link>
             </Container>
 
             <div className="mt-3">
@@ -44,7 +49,7 @@ export default function App(props) {
                             onClick={() => { toggle(2); }}
                             style={{ cursor: 'pointer' }}
                         >
-                            Rules
+                            Rules & Rubric
                         </NavLink>
                     </NavItem>
                     <NavItem>
@@ -74,43 +79,51 @@ export default function App(props) {
                     </NavItem>
                 </Nav>
                 <TabContent activeTab={activeTab}>
-                    <TabPane tabId="1">
+                    <TabPane tabId={1}>
                         <Row>
                             <Col sm="8">
                                 <p>{props.description}</p>
                             </Col>
                             <Col sm="4">
                                 <img src={props.thumbnail} height="100" width="100" />
+                                <Input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} onKeyDown={e => {
+                                    console.info(e.key)
+                                    if (e.key === 'Enter') {
+                                        updateCompetitionThumbnail(new GenericId('competitions', props.id), thumbnail)
+                                    }
+                                }}>{props.name}</Input>
                             </Col>
                         </Row>
                     </TabPane>
-                    <TabPane tabId="2">
-                        <Row>
-                            <Col sm="6">
-                                <Card body>
-                                    <CardTitle>Special Title Treatment</CardTitle>
-                                    <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                                    <Button>Go somewhere</Button>
-                                </Card>
-                            </Col>
-                            <Col sm="6">
-                                <Card body>
-                                    <CardTitle>Special Title Treatment</CardTitle>
-                                    <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                                    <Button>Go somewhere</Button>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </TabPane>
-                    <TabPane tabId="3">
+                    <TabPane tabId={2}>
+                        <h3>Dates: September 2, 2022 - September 4, 2022</h3>
 
+                        <h3>Eligibility</h3>
+
+                        <p>Anyone who is interested in learning about music and jazz issues is eligible to join.</p>
+
+                        <h3>Project and Submission Requirements</h3>
+
+                        <p>Attach a GitHub link to your project as well as a video presentation describing your product and its purpose. (max. 3 minutes)</p>
+                        <h3>Judging Criteria and Winner Selection:</h3>
+
+                        <List>
+                            <li>Uniqueness: Is the idea for the project creative and innovative?</li>
+                            <li>Design: Is the layout of the project well planned?</li>
+                            <li>Viability: Does the project demonstrate a real solution to a real problem?</li>
+                            <li>Potential Impact: Does the project have the potential to be expanded to a larger audience?</li>
+                            <li>Video Presentation: Is the developer(s) knowledgeable and confident about the technologies behind their project? Was the presentation clear and well-spoken?</li>
+                        </List>
                     </TabPane>
-                    <TabPane tabId="4">
+                    <TabPane tabId={3}>
+                        {JSON.stringify(props.prizeList)}
+                    </TabPane>
+                    <TabPane tabId={4}>
                         {JSON.stringify(participants)}
                     </TabPane>
                 </TabContent>
             </div>
-        </div>
+        </div >
     )
 }
 
