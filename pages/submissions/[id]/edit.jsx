@@ -21,11 +21,10 @@ export default function App(props) {
 
   async function handleAddSubmission(event) {
     event.preventDefault();
-    console.log(props.competitionId + props.name + props.title + props.description);
+
     await addSubmission(props);
-    // console.log(competition + name  + title + description);
   }
-  const addSubmission = useMutation("addSubmission");
+  // const addSubmission = useMutation("addSubmission");
   return (
     <Container>
       <Breadcrumb listTag="div">
