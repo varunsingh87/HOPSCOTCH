@@ -5,6 +5,7 @@ import { Button, Form, FormGroup, Label, Input, FormText, Container } from 'reac
 import { useMutation, useQuery } from "../../convex/_generated/react";
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import clientConfig from "../../convex/_generated/clientConfig";
+import { useRouter } from 'next/router';
 
 const convex = new ConvexHttpClient(clientConfig);
 
@@ -13,9 +14,12 @@ export default function App(props) {
     const [description, setDescription] = useState("");
     const [file, setFile] = useState("");
 
+    const router = useRouter()
+
     async function handleAddSubmission(event) {
         event.preventDefault();
-        await addSubmission({ title, description });
+        // await addSubmission({ title, description });
+        router.push('/profile')
         // console.log(competition + name  + title + description);
     }
     const addSubmission = useMutation("addSubmission");
