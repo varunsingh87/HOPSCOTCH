@@ -27,7 +27,7 @@ export function Layout(props: any) {
       <div className="container float-end">
         <Logout ></Logout>
       </div>
-      <div style={{float: 'right'}}>{props.children}</div>
+      <div style={{clear: 'right'}}>{props.children}</div>
     </Container>
   );
 }
