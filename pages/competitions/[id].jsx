@@ -24,6 +24,7 @@ export default function App(props) {
             </Head>
             <Container className="text-center">
                 <h1>{props.name}</h1>
+                {/* This button or wtv calls Twilio function */}
                 <div className="btn btn-outline-primary">Register for Competition</div>
             </Container>
 
