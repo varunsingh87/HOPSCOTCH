@@ -2,12 +2,20 @@ import { useRouter } from "next/router"
 import { ConvexHttpClient } from "convex/browser";
 import clientConfig from "../../convex/_generated/clientConfig";
 import Head from "next/head"
-import { TabPane } from "reactstrap"
+import { TabPane, Tab, TabContent, Nav, NavItem, NavLink, Dropdown, Row, Col, Card, CardTitle, CardText, Button } from "reactstrap"
+import classnames from "classnames"
+import { useState } from "react";
 
 const convex = new ConvexHttpClient(clientConfig);
 
 export default function App(props) {
-    const router = useRouter()
+    const [activeTab, setActiveTab] = useState(1)
+
+    const toggle = tab => {
+        if (activeTab !== tab)
+            setActiveTab(tab)
+    }
+
     return (
         <div>
             <Head>
@@ -18,22 +26,22 @@ export default function App(props) {
                 <Nav tabs>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: this.state.activeTab === '1' })}
-                            onClick={() => { this.toggle('1'); }}
+                            className={classnames({ active: activeTab === '1' })}
+                            onClick={() => { toggle('1'); }}
                         >
                             Tab1
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: this.state.activeTab === '2' })}
-                            onClick={() => { this.toggle('2'); }}
+                            className={classnames({ active: activeTab === '2' })}
+                            onClick={() => { toggle('2'); }}
                         >
                             Moar Tabs
                         </NavLink>
                     </NavItem>
                 </Nav>
-                <TabContent activeTab={this.state.activeTab}>
+                <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
                         <Row>
                             <Col sm="12">
