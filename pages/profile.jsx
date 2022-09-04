@@ -3,13 +3,13 @@ import { Check } from "react-bootstrap-icons";
 import { useQuery, useMutation } from "../convex/_generated/react";
 
 export default function Profile() {
-    const userbio = useQuery("getUserBio");
+    // const userbio = useQuery("getUserBio");
     const [bio, setBio] = useState("Loading Bio...");
     const storeUser = useMutation("storeUser");
 
-    useEffect(() => {
-        setBio(userbio)
-    }, [])
+    // useEffect(() => {
+    //     setBio(userbio)
+    // }, [])
 
     return (
         <div>
