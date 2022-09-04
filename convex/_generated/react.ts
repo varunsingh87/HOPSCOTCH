@@ -21,6 +21,7 @@ import type listParticipants from "../listParticipants";
 import type listSubmission from "../listSubmission";
 import type sendMessage from "../sendMessage";
 import type storeUser from "../storeUser";
+import type updateThumbnail from "../updateThumbnail";
 import type { OptimisticLocalStore as GenericOptimisticLocalStore } from "convex/browser";
 import type { ClientMutation, ClientQuery } from "convex/server";
 
@@ -49,6 +50,7 @@ export type ConvexAPI = {
     incrementCounter: ClientMutation<typeof incrementCounter>;
     sendMessage: ClientMutation<typeof sendMessage>;
     storeUser: ClientMutation<typeof storeUser>;
+    updateThumbnail: ClientMutation<typeof updateThumbnail>;
   };
 };
 

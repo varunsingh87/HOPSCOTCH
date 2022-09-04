@@ -18,20 +18,21 @@ export default defineSchema({
     bio: s.string()
   }),
   competitions: defineTable({
-    name: s.string(), 
-    organizer: s.string(), 
-    access: s.string(), 
-    prizeList: s.array(s.string()), 
-    address: s.string(), 
-    description: s.string(), 
-    locationCategory: s.string(), 
-    totalPrizeValue: s.number() 
+    name: s.string(),
+    organizer: s.string(),
+    access: s.string(),
+    prizeList: s.array(s.string()),
+    address: s.string(),
+    description: s.string(),
+    locationCategory: s.string(),
+    totalPrizeValue: s.number(),
+    thumbnail: s.string()
   }),
   submissions: defineTable({
     submission: s.object({
-      competition: s.id("competitions"), 
-      name: s.string(), 
-      title: s.string(), 
+      competition: s.id("competitions"),
+      name: s.string(),
+      title: s.string(),
       description: s.string()
     })
   })

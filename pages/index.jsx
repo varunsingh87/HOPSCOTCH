@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { Card, CardBody, CardGroup, CardTitle, Input, Label, CardImg, CardSubtitle, FormGroup, Button, Container, Col, Row } from "reactstrap";
-import { GeoAlt, Search } from "react-bootstrap-icons"
-import { useMutation, useQuery } from "../convex/_generated/react";
-import Head from "next/head"
+import Head from "next/head";
 import Link from "next/link";
-import styles from "../styles/Home.module.css"
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { GeoAlt } from "react-bootstrap-icons";
+import { Card, CardBody, CardGroup, CardImg, CardSubtitle, CardTitle, Container, FormGroup, Input, Label } from "reactstrap";
+import { useQuery } from "../convex/_generated/react";
 
 // Render a competition preview
 function CompetitionView(props) {
@@ -40,11 +40,7 @@ export default function App() {
     // `listCompetitions.ts`.
     const competitions = useQuery("listCompetitions") || [];
 
-    const [name, setName] = useState('user name');
-    useEffect(() => {
-        const randomName = "User " + Math.floor(Math.random() * 10000);
-        setName(randomName);
-    }, [])
+    const router = useRouter()
 
     return (
         <Container className="my-lg-4">
@@ -52,18 +48,11 @@ export default function App() {
                 <title>Browse Competitions</title>
             </Head>
             <h1 className="text-center">Competitions</h1>
-            <p className="text-center">
-                <span className="badge bg-dark">{name}</span>
-            </p>
-            <FormGroup floating>
-                <Input type="search" placeholder="Search" name="searchCompetitions" id="searchCompetitions" />
-                <Label for="searchCompetitions">Search Competitions</Label>
-            </FormGroup>
             <CardGroup className="my-3">
-                {competitions.slice(-10).map((competition) => (
+                {competitions.filter(item => !router.query.q || item.name?.includes(router.query.q) || item.description?.includes(router.query.q)).map((competition) => (
                     <CompetitionView key={competition._id} {...competition} />
                 ))}
             </CardGroup>
-        </Container>
+        </Container >
     );
 }
