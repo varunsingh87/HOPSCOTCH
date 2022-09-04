@@ -2,7 +2,7 @@ import classnames from "classnames";
 import { ConvexHttpClient } from "convex/browser";
 import Head from "next/head";
 import { useState } from "react";
-import { Button, Card, CardText, CardTitle, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
+import { Button, Card, CardText, CardTitle, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import clientConfig from "../../convex/_generated/clientConfig";
 import { useQuery } from '../../convex/_generated/react';
 
@@ -22,44 +22,53 @@ export default function App(props) {
             <Head>
                 <title>{props.name} | Musathon</title>
             </Head>
-            <h1>{props.name}</h1>
-            <div>
+            <Container className="text-center">
+                <h1>{props.name}</h1>
+                <div className="btn btn-outline-primary">Register for Competition</div>
+            </Container>
+
+            <div className="mt-3">
                 <Nav tabs>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: activeTab === '1' })}
-                            onClick={() => { toggle('1'); }}
+                            className={classnames({ active: activeTab === 1 })}
+                            onClick={() => { toggle(1); }}
+                            style={{ cursor: 'pointer' }}
                         >
                             Overview
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: activeTab === '2' })}
-                            onClick={() => { toggle('2'); }}
+                            className={classnames({ active: activeTab === 2 })}
+                            onClick={() => { toggle(2); }}
+                            style={{ cursor: 'pointer' }}
                         >
                             Rules
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: activeTab === '3' })}
-                            onClick={() => { toggle('3'); }}
+                            className={classnames({ active: activeTab === 3 })}
+                            onClick={() => { toggle(3); }}
+                            style={{ cursor: 'pointer' }}
                         >
                             Prizes
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: activeTab === '4' })}
-                            onClick={() => { toggle('4'); }}>
+                            className={classnames({ active: activeTab === 4 })}
+                            onClick={() => { toggle(4); }}
+                            style={{ cursor: 'pointer' }}>
                             Participants
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink
-                            className={classnames({ active: activeTab === '5' })}
-                            onClick={() => { toggle('5'); }}>
+                            className={classnames({ active: activeTab === 5 })}
+                            onClick={() => { toggle(5); }}
+                            style={{ cursor: 'pointer' }}>
                             Music Gallery
                         </NavLink>
                     </NavItem>
@@ -94,6 +103,9 @@ export default function App(props) {
                         </Row>
                     </TabPane>
                     <TabPane tabId="3">
+
+                    </TabPane>
+                    <TabPane tabId="4">
                         {JSON.stringify(participants)}
                     </TabPane>
                 </TabContent>

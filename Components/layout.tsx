@@ -3,6 +3,7 @@ import { Logout } from "../lib/account-auth"
 import { useEffect, useState } from "react"
 import { Document, Id } from "../convex/_generated/dataModel";
 import { useMutation } from "../convex/_generated/react";
+import Link from "next/link";
 
 // Render a chat message.
 export function Layout(props: any) {
@@ -27,14 +28,12 @@ export function Layout(props: any) {
       <Navbar>
         <NavbarBrand href="/">Musathon</NavbarBrand>
         <Nav>
-            <NavItem><NavLink href="/new-competition">Host a Musathon</NavLink></NavItem>
-            <NavItem><NavLink href="/">Browse Musathons</NavLink></NavItem>
+            <Link href="/">Browse Musathons</Link>
+            <Link href="/new-competition">Host a Musathon</Link>
         </Nav>
         <Logout />
       </Navbar>
-      <Container className="mt-2">
-        <div style={{clear: 'right'}}>{props.children}</div>
-      </Container>
+      <Container className="mt-2">{props.children}</Container>
     </div>
   );
 }
