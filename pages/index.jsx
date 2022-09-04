@@ -53,6 +53,6 @@ export default function App() {
                     <CompetitionView key={competition._id} {...competition} />
                 ))}
             </CardGroup>
-        </Container>
+        </Container >
     );
 }

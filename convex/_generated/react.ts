@@ -14,6 +14,7 @@ import type addSubmission from "../addSubmission";
 import type deleteCompetition from "../deleteCompetition";
 import type getCompetition from "../getCompetition";
 import type getCounter from "../getCounter";
+import type getUserBio from "../getUserBio";
 import type incrementCounter from "../incrementCounter";
 import type listCompetitions from "../listCompetitions";
 import type listMessages from "../listMessages";
@@ -38,6 +39,7 @@ export type ConvexAPI = {
   queries: {
     getCompetition: ClientQuery<typeof getCompetition>;
     getCounter: ClientQuery<typeof getCounter>;
+    getUserBio: ClientQuery<typeof getUserBio>;
     listCompetitions: ClientQuery<typeof listCompetitions>;
     listMessages: ClientQuery<typeof listMessages>;
     listParticipants: ClientQuery<typeof listParticipants>;
