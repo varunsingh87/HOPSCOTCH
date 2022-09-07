@@ -1,17 +1,18 @@
 import classnames from "classnames";
 import { ConvexHttpClient } from "convex/browser";
+import { GenericId } from "convex/values";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Col, Container, List, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
+import { Col, Container, List, Nav, Input, Button, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import clientConfig from "../../convex/_generated/clientConfig";
-import { useQuery } from '../../convex/_generated/react';
+import { useQuery, useMutation } from '../../convex/_generated/react';
 
 const convex = new ConvexHttpClient(clientConfig);
 
 export default function App(props) {
-    // const participants = useQuery('listParticipants', props.id)
+    const participants = useQuery('listParticipants', props.id)
     const [activeTab, setActiveTab] = useState(1)
 
     const toggle = tab => {
@@ -19,20 +20,20 @@ export default function App(props) {
             setActiveTab(tab)
     }
 
-    // const [thumbnail, setThumbnail] = useState(props.thumbnail)
-    // const updateCompetitionThumbnail = useMutation('updateThumbnail')
-    // const deleteCompetition = useMutation('deleteCompetition')
+    const [thumbnail, setThumbnail] = useState(props.thumbnail)
+    const updateCompetitionThumbnail = useMutation('updateThumbnail')
+    const deleteCompetition = useMutation('deleteCompetition')
 
     const router = useRouter()
 
     return (
         <div>
             <Head>
-                {/* <title>{props.name} | Musathon</title> */}
+                <title>{props.name} | Musathon</title>
             </Head>
             <Container className="text-center">
-                {/* <h2>{props.name}</h2> */}
-                {/* <Link href={`/submissions/new?competition=${props.id}`}><a className="btn btn-outline-primary">Enter Submission</a></Link> */}
+                <h2>{props.name}</h2>
+                <Link href={`/submissions/new?competition=${props.id}`}><a className="btn btn-outline-primary">Enter Submission</a></Link>
             </Container>
 
             <div className="mt-3">
@@ -83,21 +84,21 @@ export default function App(props) {
                 </Nav>
                 <TabContent activeTab={activeTab}>
                     <TabPane tabId={1}>
-                        {/* <Row>
+                        <Row>
                             <Col sm="8">
                                 <p>{props.description}</p>
                             </Col>
                             <Col sm="4">
                                 <img src={props.thumbnail || ''} height="100" width="100" />
-                                {/* <Input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} onKeyDown={e => {
+                                <Input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} onKeyDown={e => {
                                     console.info(e.key)
                                     if (e.key === 'Enter') {
                                         updateCompetitionThumbnail(new GenericId('competitions', props.id), thumbnail)
                                     }
                                 }}>{props.name}</Input>
-                        <Button onClick={() => { deleteCompetition(new GenericId('competitions', props.id)) }} className="btn btn-danger">Delete Competition</Button>
-                    </Col>
-                </Row> */}
+                                <Button onClick={() => { deleteCompetition(new GenericId('competitions', props.id)) }} className="btn btn-danger">Delete Competition</Button>
+                            </Col>
+                        </Row>
                     </TabPane>
                     <TabPane tabId={2}>
                         <h3>Dates: September 2, 2022 - September 4, 2022</h3>
@@ -120,32 +121,32 @@ export default function App(props) {
                         </List>
                     </TabPane>
                     <TabPane tabId={3}>
-                        {/* {JSON.stringify(props.prizeList)} */}
+                        {JSON.stringify(props.prizeList)}
                     </TabPane>
                     <TabPane tabId={4}>
-                        {/* {JSON.stringify(participants)} */}
+                        {JSON.stringify(participants)}
                     </TabPane>
                 </TabContent>
-            </div >
-        </div >
+            </div>
+        </div>
     )
 }
 
-// export async function getStaticProps(context) {
-//     const competition = await convex.query("getCompetition")(context.params.id)
-//     competition.id = competition._id = competition._id.id
+export async function getStaticProps(context) {
+    const competition = await convex.query("getCompetition")(context.params.id)
+    competition.id = competition._id = competition._id.id
 
-//     return { props: competition }
-// }
+    return { props: competition }
+}
 
-// export async function getStaticPaths() {
-//     const competitions = await convex.query("listCompetitions")();
-//     return {
-//         paths: competitions.map(item => {
-//             return {
-//                 params: { id: item._id.id }
-//             }
-//         }),
-//         fallback: false
-//     }
-// }
+export async function getStaticPaths() {
+    const competitions = await convex.query("listCompetitions")();
+    return {
+        paths: competitions.map(item => {
+            return {
+                params: { id: item._id.id }
+            }
+        }),
+        fallback: false
+    }
+}
