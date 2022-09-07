@@ -8,7 +8,7 @@ export function Login() {
     }
     return (
       <main className="py-4">
-        <h1 className="text-center">Musathon</h1>
+        <h1 className="text-center">Hopscotch</h1>
         <div className="text-center">
           <span>
             <button className="btn btn-primary" onClick={loginWithRedirect}>

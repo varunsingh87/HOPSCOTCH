@@ -1,46 +1,48 @@
 import React, { useState, useEffect } from "react";
 import { Check } from "react-bootstrap-icons";
+import { Card, CardBody, CardFooter, CardImg, Col, Row } from "reactstrap";
 import { useQuery, useMutation } from "../convex/_generated/react";
 
 function SubmissionViewer() {
     return (
-        <div class="card">
-            <img src="https://www.aboutbritain.com/images/articles/big/medieval-knights-shutterstock-trio-92785621.jpg"
+        <Card>
+            <CardImg src="https://www.aboutbritain.com/images/articles/big/medieval-knights-shutterstock-trio-92785621.jpg"
                 class="card-img-top"
                 height="100px"
+                top
                 width="auto"
                 style={{ objectFit: "cover" }} />
-            <div class="card-body">
+            <CardBody>
                 <h5 class="card-title">Medieval Chant</h5>
                 <p class="card-text">Encapsulates the spirit of the most noble and bravest knights.</p>
-            </div>
-            <div class="card-footer">
+            </CardBody>
+            <CardFooter>
                 <small class="text-muted">Last updated {Math.round(Math.random() * 5)} mins ago</small>
-            </div>
-        </div>
+            </CardFooter>
+        </Card>
     );
 }
 
 function SubmissionsList() {
     return (
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col">
+        <Row class="row-cols-1 row-cols-md-3 g-4">
+            <Col>
                 <SubmissionViewer />
-            </div>
-            <div class="col">
+            </Col>
+            <Col>
                 <SubmissionViewer />
-            </div>
-            <div class="col">
+            </Col>
+            <Col>
                 <SubmissionViewer />
-            </div>
-        </div>
+            </Col>
+        </Row>
     )
 }
 
 export default function Profile() {
     const userbio = useQuery("getUserBio");
     const [bio, setBio] = useState(
-        "Sample Bio: I am very enthusiastic about Hackathons, and since I also love the Piano and Composing, I was very happy when I found this fully functional and bug free site that hosts music competitions.");
+        "Loading Bio...");
     const storeUser = useMutation("storeUser");
 
     useEffect(() => {

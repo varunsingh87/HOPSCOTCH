@@ -28,26 +28,28 @@ export function Layout(props: any) {
   return (
     <div>
       <Navbar color="secondary" dark expand="md" container="fluid">
-        <Link href="/"><NavbarBrand href="/"><img alt='logo' height={50} src="/MusathonLogo.png" /> Musathon</NavbarBrand></Link>
+        <Link href="/"><NavbarBrand href="/"><img alt='logo' height={50} src="/MusathonLogo.png" /> Hopscotch</NavbarBrand></Link>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ms-5 me-auto align-items-center" navbar> 
             <NavItem>
-              <Link href="/"><NavLink href="/">Browse Musathons</NavLink></Link>
+              <Link href="/"><NavLink href="/">Browse Competitions</NavLink></Link>
             </NavItem>
             <NavItem>
-              <Link href="/new-competition"><NavLink href="/new-competition">Host a Musathon</NavLink></Link>
+              <Link href="/new-competition"><NavLink href="/new-competition">Host a Competition</NavLink></Link>
             </NavItem>
             <div tabIndex={0} style={{width: '500px'}} className="search-bar-container form-control input-group d-flex align-items-center">
                 <Search className="input-group-prepend" width="25px" />
-                <Input style={{outline: 'none', boxShadow: 'none', border: 'none'}} type="search" placeholder="Search" onChange={e => router.push({pathname: '/', query: { q: e.target.value }})} name="searchCompetitions" id="searchCompetitions" className="py-0" />
+                <Input style={{outline: 'none', boxShadow: 'none', border: 'none'}} type="search" placeholder="Search competitions" onChange={e => router.push({pathname: '/', query: { q: e.target.value }})} name="searchCompetitions" id="searchCompetitions" className="py-0" />
             </div>
           </Nav>
             <Logout />
         </Collapse> 
         
       </Navbar>
-      <Container>{props.children}</Container>
+      <Container fluid>
+        {props.children}
+      </Container>
     </div>
   );
 }

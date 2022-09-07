@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * Generated production client configuration.
+ * Generated development client configuration.
  *
  * THIS CODE IS AUTOMATICALLY GENERATED.
  *
@@ -12,22 +12,12 @@
 import type { ClientConfiguration } from "convex/browser";
 
 /**
- * NOCOMMIT
+ * The DEVELOPMENT Convex client configuration.
  *
- * We recommend not committing this config into your main branch, because it
- * references your production deployment. Instead:
- * 1. Run `npx convex codegen` to generate your development config and check
- *    that in.
- * 2. When you want to deploy, run `npx convex deploy` first. This will
- *    generate your production config. Then run your bundler.
- */
-
-/**
- * The PRODUCTION Convex client configuration.
+ * This configuration connects your client to your development Convex deployment
+ * when `npx convex dev` is running.
  *
- * This configuration connects your client to your production Convex deployment.
- *
- * To generate the development version, run `npx convex dev` or `npx convex codegen`.
+ * To generate the production version, run `npx convex deploy`.
  *
  * Usage:
  *
@@ -38,6 +28,6 @@ import type { ClientConfiguration } from "convex/browser";
  * ```
  */
 const clientConfig: ClientConfiguration = {
-  address: "https://hushed-hamster-66.convex.cloud",
+  address: "http://localhost:8187",
 };
 export default clientConfig;

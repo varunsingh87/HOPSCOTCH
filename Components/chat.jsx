@@ -36,25 +36,25 @@ export default function Chat(props) {
   }
   return (
     <div>
-      <h1 className="text-center">Musathon Chat</h1>
- 
+      <h1 className="text-center">Hopscotch Chat</h1>
+
       <p className="text-center">
         <span className="badge bg-dark">{name}</span>
       </p>
       <PerfectScrollbar>
-      <ul className="list-group shadow-sm my-3">
-        {messages.slice(-10).map((message) => (
-          <li
-            key={message._id}
-            className="list-group-item d-flex justify-content-between"
-          >
-            <MessageView message={message} />
-            <div className="ml-auto text-secondary text-nowrap">
-              {new Date(message._creationTime).toLocaleTimeString()}
-            </div>
-          </li>
-        ))}
-      </ul>
+        <ul className="list-group shadow-sm my-3">
+          {messages.slice(-10).map((message) => (
+            <li
+              key={message._id}
+              className="list-group-item d-flex justify-content-between"
+            >
+              <MessageView message={message} />
+              <div className="ml-auto text-secondary text-nowrap">
+                {new Date(message._creationTime).toLocaleTimeString()}
+              </div>
+            </li>
+          ))}
+        </ul>
       </PerfectScrollbar>
       <form
         onSubmit={handleSendMessage}

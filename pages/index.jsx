@@ -3,14 +3,16 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { GeoAlt } from "react-bootstrap-icons";
-import { Card, CardBody, CardGroup, CardImg, CardSubtitle, CardTitle, Container, FormGroup, Input, Label } from "reactstrap";
+import { Col, ButtonGroup, Button, ButtonToggle, Card, CardBody, CardGroup, CardImg, CardSubtitle, CardTitle, Container, FormGroup, Input, Label, Row, List } from "reactstrap";
 import { useQuery } from "../convex/_generated/react";
+import styles from '../styles/Home.module.css'
+import classnames from "classnames"
 
 // Render a competition preview
 function CompetitionView(props) {
     const startDate = new Date(props._creationTime).toLocaleDateString()
     return (
-        <Card style={{ flexBasis: '350px', flexGrow: 0 }} className="mb-3 p-3 border">
+        <Card style={{ flexBasis: '350px', flexGrow: 0 }} className={classnames("mb-5", "mx-2", "p-3", "rounded", "border", styles.competitionView)}>
             <Link href={`/competitions/${props._id}`} >
                 <a style={{ textDecoration: 'none', color: 'unset' }}>
                     <CardImg
@@ -24,14 +26,13 @@ function CompetitionView(props) {
                     >
                         {props.description || <span style={{ fontStyle: 'italic' }}>No description provided</span>}
                     </CardSubtitle>
-                    <CardBody>
-                        <p><GeoAlt /> {props.locationCategory}, {props.access}</p>
-                        <p>${props.totalPrizeValue} in Prizes</p>
-                        <h2><strong>{Math.round(Math.random() * 32) + 60}</strong> participants</h2>
-                    </CardBody>
+                    <p><GeoAlt /> {props.locationCategory}, {props.access}
+                        <br />${props.totalPrizeValue} in Prizes
+                        <br /><strong>{Math.round(Math.random() * 32) + 60}</strong> participants
+                    </p>
                 </a>
             </Link>
-        </Card>
+        </Card >
     );
 }
 
@@ -43,16 +44,31 @@ export default function App() {
     const router = useRouter()
 
     return (
-        <Container className="my-lg-4">
+        <>
             <Head>
                 <title>Browse Competitions</title>
             </Head>
             <h1 className="text-center">Competitions</h1>
-            <CardGroup className="my-3">
-                {competitions.filter(item => !router.query.q || item.name?.includes(router.query.q) || item.description?.includes(router.query.q)).map((competition) => (
-                    <CompetitionView key={competition._id} {...competition} />
-                ))}
-            </CardGroup>
-        </Container>
+            <Row>
+                <Col lg="10">
+                    <CardGroup className="my-3">
+                        {competitions.filter(item => !router.query.q || item.name?.includes(router.query.q) || item.description?.includes(router.query.q)).map((competition) => (
+                            <CompetitionView key={competition._id} {...competition} />
+                        ))}
+                    </CardGroup>
+                </Col>
+                <Col lg="2">
+                    <p>All Network Sites</p>
+                    <List type="unstyled">
+                        <li><img width="20" src="/MusathonLogo.png" /><Link href="/musathons">Musathons</Link></li>
+                        <li><Link href="/hackathons">Hackathons</Link></li>
+                        <li><Link href="/bookathons">Bookathons</Link></li>
+                        <li><Link href="/filmathons">Filmathons</Link></li>
+                        <li><Link href="/ideathons">Ideathons</Link></li>
+                    </List>
+                </Col>
+            </Row>
+
+        </>
     );
 }
