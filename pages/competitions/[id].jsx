@@ -109,7 +109,7 @@ export default function App(props) {
 
                         <h3>Project and Submission Requirements</h3>
 
-                        <p>Attach a GitHub link to your project as well as a video presentation describing your product and its purpose. (max. 3 minutes)</p>
+                        <p>Attach a Noteflight or FlatIO link to your project as well as a video presentation describing your product and its purpose. (max. 3 minutes)</p>
                         <h3>Judging Criteria and Winner Selection:</h3>
 
                         <List>

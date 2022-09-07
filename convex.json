@@ -1,6 +1,6 @@
 {
-  "project": "compeworld-webapp",
-  "team": "compeworld",
+  "project": "hopscotch-webapp",
+  "team": "hopscotch",
   "prodUrl": "https://hushed-hamster-66.convex.cloud",
   "functions": "convex/",
   "authInfo": [
