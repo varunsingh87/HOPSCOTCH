@@ -1,7 +1,7 @@
 import { query } from './_generated/server'
 import { Document, Id } from "./_generated/dataModel";
 
-export default query(async ({ db, auth }): Promise<string | null> => {
+export default query(async ({ db, auth }): Promise<Object | null> => {
     const identity = await auth.getUserIdentity();
     if (!identity) {
         throw new Error("Called storeUser without authentication present");
@@ -11,5 +11,5 @@ export default query(async ({ db, auth }): Promise<string | null> => {
         .table("users")
         .filter(q => q.eq(q.field("tokenIdentifier"), identity.tokenIdentifier))
         .first();
-    return user != null ? user.bio : null;
+    return user != null ? user : null;
 })
