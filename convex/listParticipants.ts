@@ -1,5 +1,11 @@
-import { query } from "./_generated/server"
+import { v } from 'convex/values'
+import { query } from './_generated/server'
 
-export default query(async ({ db }, competitionId) => {
-    return await db.table('submissions').filter(item => item.eq(item.field('_id'), competitionId)).collect()
+export default query({
+  args: {
+    competitionId: v.id('competitions'),
+  },
+  handler: async ({ db }, { competitionId }) => {
+    return await db.get(competitionId)
+  },
 })

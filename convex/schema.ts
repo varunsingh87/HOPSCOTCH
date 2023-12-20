@@ -1,39 +1,32 @@
-// To start using a schema, rename this file to schema.ts
-import { defineSchema, defineTable, s, SchemaType } from "convex/schema";
+import { defineSchema, defineTable } from 'convex/server'
+import { v } from 'convex/values'
+
+export const competition = {
+  name: v.string(),
+  organizer: v.string(),
+  access: v.string(),
+  prizeList: v.array(v.string()),
+  address: v.string(),
+  description: v.string(),
+  locationCategory: v.string(),
+  totalPrizeValue: v.number(),
+  thumbnail: v.string(),
+}
+
+export const submission = {
+  competition: v.id('competitions'),
+  name: v.string(),
+  title: v.string(),
+  description: v.string(),
+}
 
 export default defineSchema({
-  messages: defineTable({
-    author: s.string(),
-    body: s.string(),
-    competition: s.string()
-  }),
-  counters: defineTable({
-    name: s.string(),
-    counter: s.number(),
-  }),
   users: defineTable({
-    name: s.string(),
-    tokenIdentifier: s.string(),
-    pictureURL: s.string(),
-    bio: s.string()
+    name: v.string(),
+    tokenIdentifier: v.string(),
+    pictureURL: v.string(),
+    bio: v.string(),
   }),
-  competitions: defineTable({
-    name: s.string(),
-    organizer: s.string(),
-    access: s.string(),
-    prizeList: s.array(s.string()),
-    address: s.string(),
-    description: s.string(),
-    locationCategory: s.string(),
-    totalPrizeValue: s.number(),
-    thumbnail: s.string()
-  }),
-  submissions: defineTable({
-    submission: s.object({
-      competition: s.id("competitions"),
-      name: s.string(),
-      title: s.string(),
-      description: s.string()
-    })
-  })
-});
+  competitions: defineTable(competition),
+  submissions: defineTable(submission),
+})

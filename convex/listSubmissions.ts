@@ -1,5 +1,7 @@
-import { query } from "./_generated/server";
+import { query } from './_generated/server'
 
-export default query(async ({ db }) => {
-    return await db.table("submissions").collect();
-});
+export default query({
+  handler: async ({ db }) => {
+    return await db.query('submissions').collect()
+  },
+})
