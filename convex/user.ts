@@ -1,7 +1,23 @@
+import { query } from './_generated/server'
 import { v } from 'convex/values'
 import { mutation } from './_generated/server'
 
-export default mutation({
+export const getUser = query({
+  args: {},
+  handler: async ({ db, auth }) => {
+    const identity = await auth.getUserIdentity()
+    if (!identity) {
+      throw new Error('Called storeUser without authentication present')
+    }
+    const user = await db
+      .query('users')
+      .filter((q) => q.eq(q.field('tokenIdentifier'), identity.tokenIdentifier))
+      .first()
+    return user != null ? user : null
+  },
+})
+
+export const storeUser = mutation({
   args: { bio: v.string() },
   handler: async ({ db, auth }, { bio }) => {
     const identity = await auth.getUserIdentity()

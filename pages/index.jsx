@@ -4,9 +4,6 @@ import { useRouter } from 'next/router'
 import { GeoAlt } from 'react-bootstrap-icons'
 import {
   Col,
-  ButtonGroup,
-  Button,
-  ButtonToggle,
   Card,
   CardBody,
   CardGroup,
@@ -15,6 +12,7 @@ import {
   CardTitle,
   Row,
   List,
+  Container,
 } from 'reactstrap'
 import { useQuery } from 'convex/react'
 import styles from '../styles/Home.module.css'
@@ -26,7 +24,6 @@ function CompetitionView(props) {
   const startDate = new Date(props._creationTime).toLocaleDateString()
   return (
     <Card
-      style={{ flexBasis: '350px', flexGrow: 0 }}
       className={classnames(
         'mb-5',
         'mx-2',
@@ -44,7 +41,7 @@ function CompetitionView(props) {
           alt="Card image cap"
           src={props.thumbnail || 'https://picsum.photos/318/181'}
         />
-        <CardTitle tag="h1">{props.name}</CardTitle>
+        <CardTitle tag="h2">{props.name}</CardTitle>
         <CardSubtitle className="mb-2 text-muted" tag="h6">
           {props.description || (
             <span style={{ fontStyle: 'italic' }}>No description provided</span>
@@ -90,25 +87,27 @@ export default function App() {
           </CardGroup>
         </Col>
         <Col lg="2">
-          <p>All Network Sites</p>
-          <List type="unstyled">
-            <li>
-              <img width="20" src="/MusathonLogo.png" />
-              <Link href="/musathons">Musathons</Link>
-            </li>
-            <li>
-              <Link href="/hackathons">Hackathons</Link>
-            </li>
-            <li>
-              <Link href="/bookathons">Bookathons</Link>
-            </li>
-            <li>
-              <Link href="/filmathons">Filmathons</Link>
-            </li>
-            <li>
-              <Link href="/ideathons">Ideathons</Link>
-            </li>
-          </List>
+          <Container className={styles.network}>
+            <p>All Network Sites</p>
+            <List type="unstyled">
+              <li>
+                <img width="20" src="/MusathonLogo.png" />
+                <Link href="/musathons">Musathons</Link>
+              </li>
+              <li>
+                <Link href="/hackathons">Hackathons</Link>
+              </li>
+              <li>
+                <Link href="/bookathons">Bookathons</Link>
+              </li>
+              <li>
+                <Link href="/filmathons">Filmathons</Link>
+              </li>
+              <li>
+                <Link href="/ideathons">Ideathons</Link>
+              </li>
+            </List>
+          </Container>
         </Col>
       </Row>
     </>

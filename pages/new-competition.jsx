@@ -42,6 +42,7 @@ export default function App(props) {
   const [address, setAddress] = useState('')
   const [access, setAccess] = useState(Access.PUBLIC)
   const [description, setDescription] = useState('')
+  const [rules, setRules] = useState('')
 
   async function handleAddCompetition(event) {
     event.preventDefault()
@@ -51,6 +52,7 @@ export default function App(props) {
     setTotalPrizeValue(500)
     setPrizeList([])
     setDescription('')
+    setRules('')
     await addCompetition({
       name: newCompetitionName,
       organizer: user,
@@ -60,6 +62,7 @@ export default function App(props) {
       description,
       locationCategory,
       totalPrizeValue,
+      rules,
       thumbnail: 'https://picsum.photos/318/180',
     })
     router.push('/')
@@ -210,6 +213,16 @@ export default function App(props) {
                   Invite Only
                 </Button>
               </ButtonGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="rules">Rules and Rubric</Label>
+              <textarea
+                id="rules"
+                value={rules}
+                onChange={(e) => setRules(e.target.value)}
+                className="form-control"
+              />
             </FormGroup>
 
             <Input

@@ -56,21 +56,15 @@ function SubmissionsList() {
       <Col>
         <SubmissionViewer />
       </Col>
-      <Col>
-        <SubmissionViewer />
-      </Col>
-      <Col>
-        <SubmissionViewer />
-      </Col>
     </Row>
   )
 }
 
 export default function Profile() {
   const { isAuthenticated } = useConvexAuth()
-  const user = useQuery(api.getUserInfo.default)
+  const user = useQuery(api.user.getUser)
   const [bio, setBio] = useState('Loading Bio...')
-  const storeUser = useMutation(api.storeUser.default)
+  const storeUser = useMutation(api.user.storeUser)
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {

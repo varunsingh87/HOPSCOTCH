@@ -20,6 +20,13 @@ import {
 } from 'reactstrap'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import Rules from '../../Components/rules'
+import SubmissionsList from '../../Components/submissionsList'
+import Overview from '../../Components/overview'
+
+const convex = new ConvexHttpClient(
+  process.env.NEXT_PUBLIC_CONVEX_DEPLOYMENT_URL
+)
 
 /**
  * @param props.id {string} The id of the competition
@@ -27,16 +34,11 @@ import { api } from '../../convex/_generated/api'
  * @param props.thumbnail {string}
  */
 export default function App(props) {
-  const participants = useQuery(api.listParticipants.default, props)
   const [activeTab, setActiveTab] = useState(1)
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab)
   }
-
-  const [thumbnail, setThumbnail] = useState(props.thumbnail)
-  const updateCompetitionThumbnail = useMutation(api.updateThumbnail.default)
-  const deleteCompetition = useMutation(api.competition.deleteCompetition)
 
   const router = useRouter()
 
@@ -92,17 +94,6 @@ export default function App(props) {
           </NavItem>
           <NavItem>
             <NavLink
-              className={classnames({ active: activeTab === 4 })}
-              onClick={() => {
-                toggle(4)
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              Participants
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
               className={classnames({ active: activeTab === 5 })}
               onClick={() => {
                 toggle(5)
@@ -115,104 +106,38 @@ export default function App(props) {
         </Nav>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={1}>
-            <Row>
-              <Col sm="8">
-                <p>{props.description}</p>
-              </Col>
-              <Col sm="4">
-                <img src={props.thumbnail || ''} height="100" width="100" />
-                <Input
-                  type="text"
-                  value={thumbnail}
-                  onChange={(e) => setThumbnail(e.target.value)}
-                  onKeyDown={(e) => {
-                    console.info(e.key)
-                    if (e.key === 'Enter') {
-                      updateCompetitionThumbnail(
-                        new GenericId('competitions', props.id),
-                        thumbnail
-                      )
-                    }
-                  }}
-                >
-                  {props.name}
-                </Input>
-                <Button
-                  onClick={() => {
-                    deleteCompetition(props.id)
-                  }}
-                  className="btn btn-danger"
-                >
-                  Delete Competition
-                </Button>
-              </Col>
-            </Row>
+            <Overview {...props} />
           </TabPane>
-          <TabPane tabId={2}>
-            <h3>Dates: September 2, 2022 - September 4, 2022</h3>
-
-            <h3>Eligibility</h3>
-
-            <p>
-              Anyone who is interested in learning about music and jazz issues
-              is eligible to join.
-            </p>
-
-            <h3>Project and Submission Requirements</h3>
-
-            <p>
-              Attach a Noteflight or FlatIO link to your project as well as a
-              video presentation describing your product and its purpose. (max.
-              3 minutes)
-            </p>
-            <h3>Judging Criteria and Winner Selection:</h3>
-
-            <List>
-              <li>
-                Uniqueness: Is the idea for the project creative and innovative?
-              </li>
-              <li>Design: Is the layout of the project well planned?</li>
-              <li>
-                Viability: Does the project demonstrate a real solution to a
-                real problem?
-              </li>
-              <li>
-                Potential Impact: Does the project have the potential to be
-                expanded to a larger audience?
-              </li>
-              <li>
-                Video Presentation: Is the developer(s) knowledgeable and
-                confident about the technologies behind their project? Was the
-                presentation clear and well-spoken?
-              </li>
-            </List>
-          </TabPane>
+          <Rules />
           <TabPane tabId={3}>{JSON.stringify(props.prizeList)}</TabPane>
-          <TabPane tabId={4}>{JSON.stringify(participants)}</TabPane>
+          <TabPane tabId={5}>
+            <SubmissionsList id={props.id} />
+          </TabPane>
         </TabContent>
       </div>
     </div>
   )
 }
 
-//export async function getStaticProps(context) {
-//  const competition = useQuery(
-//    api.competition.getCompetition,
-//    context.params.id
-//  )
-//  competition.id = competition._id = competition._id.id
-//
-//  return { props: competition }
-//}
-//
-//export async function getStaticPaths() {
-//  const competitions = await useQuery(api.competition.listCompetitions)
-//  return {
-//    paths: competitions.map((item) => {
-//      return {
-//        params: { id: item._id.id },
-//      }
-//    }),
-//    fallback: false,
-//  }
-//}
+export async function getStaticProps(context) {
+  console.log('[getStaticProps]' + JSON.stringify(context))
+  const competition = await convex.query(
+    api.competition.getCompetition,
+    context.params
+  )
+
+  return { props: { id: competition._id, ...competition } }
+}
+
+export async function getStaticPaths() {
+  const competitions = await convex.query(api.competition.listCompetitions)
+  //  console.log(competitions)
+  return {
+    paths: competitions.map((item) => {
+      return {
+        params: { id: item._id },
+      }
+    }),
+    fallback: false,
+  }
+}

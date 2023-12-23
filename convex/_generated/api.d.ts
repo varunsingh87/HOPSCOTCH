@@ -14,13 +14,11 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as addSubmission from "../addSubmission.js";
 import type * as competition from "../competition.js";
-import type * as getUserInfo from "../getUserInfo.js";
-import type * as listParticipants from "../listParticipants.js";
-import type * as listSubmissions from "../listSubmissions.js";
-import type * as storeUser from "../storeUser.js";
+import type * as participant from "../participant.js";
+import type * as submission from "../submission.js";
 import type * as updateThumbnail from "../updateThumbnail.js";
+import type * as user from "../user.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,13 +29,11 @@ import type * as updateThumbnail from "../updateThumbnail.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  addSubmission: typeof addSubmission;
   competition: typeof competition;
-  getUserInfo: typeof getUserInfo;
-  listParticipants: typeof listParticipants;
-  listSubmissions: typeof listSubmissions;
-  storeUser: typeof storeUser;
+  participant: typeof participant;
+  submission: typeof submission;
   updateThumbnail: typeof updateThumbnail;
+  user: typeof user;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

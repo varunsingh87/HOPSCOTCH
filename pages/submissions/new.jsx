@@ -10,9 +10,8 @@ import {
   FormText,
   Container,
 } from 'reactstrap'
-import { useMutation, useQuery } from '../../convex/_generated/react'
+import { useMutation, useQuery } from 'convex/react'
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap'
-import clientConfig from '../../convex/_generated/clientConfig'
 import { useRouter } from 'next/router'
 import { api } from '../../convex/_generated/api'
 
@@ -30,7 +29,7 @@ export default function App(props) {
     // console.log(competition + name  + title + description);
   }
 
-  const addSubmission = useMutation(api.addSubmission)
+  const addSubmission = useMutation(api.submission.addSubmission)
   return (
     <Container>
       <Breadcrumb listTag="div">

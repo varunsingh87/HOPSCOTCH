@@ -10,6 +10,7 @@ export const competition = {
   description: v.string(),
   locationCategory: v.string(),
   totalPrizeValue: v.number(),
+  rules: v.optional(v.string()),
   thumbnail: v.string(),
 }
 

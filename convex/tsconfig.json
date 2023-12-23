@@ -3,13 +3,14 @@
 	* Convex functions run in and is used to typecheck them.
 	* You can modify it, but some settings required to use Convex.
 		*/
+
 		"compilerOptions": {
 		/* These settings are not required by Convex and can be modified. */
 		"allowJs": true,
 		"strict": true,
-		/* These compiler options are required by Convex */
+			/* These compiler options are required by Convex */
 			"target": "ESNext",
-			"lib": [
+		"lib": [
 		"ES2021",
 		"dom"
 		],
@@ -18,15 +19,15 @@
 		"module": "ESNext",
 		"moduleResolution": "Node",
 		"isolatedModules": true,
-		"noEmit": true,
+	"noEmit": true,
 	/* Prevents node_modules from adding additional global types e.g. node types */
-	"types": []
+		"types": []
 		},
-		"include": [
+	"include": [
 	"./**/*",
-	"..\\node_modules\\convex\\dist\\esm\\environment\\index.d.ts"
-		],
-	"exclude": [
+		"..\\node_modules\\convex\\dist\\esm\\environment\\index.d.ts"
+	],
+"exclude": [
 "./_generated"
 ]
 }

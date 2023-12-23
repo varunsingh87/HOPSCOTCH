@@ -19,7 +19,7 @@ import { api } from '../convex/_generated/api'
 
 // Render a chat message.
 export function Layout(props: any) {
-  const storeUser = useMutation(api.storeUser.default)
+  const storeUser = useMutation(api.user.storeUser)
   useEffect(() => {
     // Store the user in the database.
     // Recall that `storeUser` gets the user information via the `auth`
