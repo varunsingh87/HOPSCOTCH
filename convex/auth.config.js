@@ -1,5 +1,3 @@
-import {Auth, UserIdentity} from "convex/server";
-
 export default {
   providers: [
     {
@@ -8,8 +6,8 @@ export default {
     },
   ],
   /**
-   * @param {Auth} auth
-   * @return Promise<UserIdentity>
+   * @param auth
+   * @return user identity
    */
   verify: async (auth) => {
     const identity = await auth.getUserIdentity()
