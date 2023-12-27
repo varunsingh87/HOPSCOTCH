@@ -17,7 +17,6 @@ import type {
 import type * as competition from "../competition.js";
 import type * as participant from "../participant.js";
 import type * as submission from "../submission.js";
-import type * as updateThumbnail from "../updateThumbnail.js";
 import type * as user from "../user.js";
 
 /**
@@ -32,7 +31,6 @@ declare const fullApi: ApiFromModules<{
   competition: typeof competition;
   participant: typeof participant;
   submission: typeof submission;
-  updateThumbnail: typeof updateThumbnail;
   user: typeof user;
 }>;
 export declare const api: FilterApi<

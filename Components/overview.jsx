@@ -4,7 +4,9 @@ import { useMutation } from 'convex/react'
 import { api } from '../convex/_generated/api'
 
 export default function Overview(props) {
-  const updateCompetitionThumbnail = useMutation(api.updateThumbnail.default)
+  const updateCompetitionThumbnail = useMutation(
+    api.competition.updateThumbnail
+  )
   const deleteCompetition = useMutation(api.competition.deleteCompetition)
   const [thumbnail, setThumbnail] = useState(props.thumbnail)
 

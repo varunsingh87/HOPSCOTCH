@@ -29,3 +29,10 @@ export const deleteCompetition = mutation({
     await db.delete(id)
   },
 })
+
+export const updateThumbnail = mutation({
+  args: { id: v.id('competitions'), newSrc: v.string() },
+  handler: async ({ db }, args) => {
+    await db.patch<'competitions'>(args.id, { thumbnail: args.newSrc })
+  },
+})
