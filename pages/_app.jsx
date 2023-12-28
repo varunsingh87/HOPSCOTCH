@@ -9,7 +9,7 @@ import {
   ConvexReactClient,
   Unauthenticated,
 } from 'convex/react'
-import { Login } from '../lib/account-auth'
+import { Login } from '../shared/account-auth'
 
 const convex = new ConvexReactClient(
   process.env.NEXT_PUBLIC_CONVEX_DEPLOYMENT_URL

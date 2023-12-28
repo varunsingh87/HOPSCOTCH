@@ -16,10 +16,20 @@ export const competition = {
 }
 
 export const submission = {
-  competition: v.id('teams'),
-  name: v.string(),
   title: v.string(),
   description: v.string(),
+}
+
+export const joinRequest = {
+  user: v.id('users'),
+  teamConsent: v.boolean(),
+  userConsent: v.boolean(),
+}
+
+const team = {
+  competition: v.id('competitions'),
+  submission: v.optional(v.object(submission)),
+  joinRequests: v.array(v.object(joinRequest)),
 }
 
 const user = {
@@ -29,17 +39,16 @@ const user = {
   bio: v.string(),
 }
 
+const participant = {
+  team: v.id('teams'),
+  user: v.id('users'),
+}
+
 export default defineSchema({
   users: defineTable(user).index('primary', ['tokenIdentifier']),
   competitions: defineTable(competition),
-  teams: defineTable({
-    competition: v.id('competitions'),
-    submission: v.optional(v.object(submission)),
-  }).index('by_competition', ['competition']),
-  participants: defineTable({
-    team: v.id('teams'),
-    user: v.id('users'),
-  })
+  teams: defineTable(team).index('by_competition', ['competition']),
+  participants: defineTable(participant)
     .index('by_user', ['user'])
     .index('by_team', ['team']),
 })

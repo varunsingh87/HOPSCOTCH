@@ -8,17 +8,15 @@ import {
   ButtonGroup,
   Button,
   Col,
-  List,
   Row,
   Breadcrumb,
   BreadcrumbItem,
   ListGroup,
-  Table,
   ListGroupItem,
 } from 'reactstrap'
 import { GeoAlt, X } from 'react-bootstrap-icons'
 import { useMutation } from 'convex/react'
-import { Access } from '../lib/info'
+import { Access } from '../shared/info'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'

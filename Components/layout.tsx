@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import {
@@ -13,7 +12,7 @@ import {
   NavLink,
 } from 'reactstrap'
 import { useMutation } from 'convex/react'
-import { Logout } from '../lib/account-auth'
+import { Logout } from '../shared/account-auth'
 import { Search } from 'react-bootstrap-icons'
 import { api } from '../convex/_generated/api'
 
