@@ -119,6 +119,13 @@ export const inviteToTeam = mutation({
 
 /**
  * Leaves a competition
+ * Postconditions:
+ * - User is banned from competition IFF the team was multi-person
+ * - User is unassigned from team he was last on
+ * - User is unassigned from competition
+ * - All join requests for user to teams in the competition no longer exist
+ * - ALl join requests for team no longer exist IFF the team is a singleton
+ * - The team the user was on no longer exists IFF the team is a singleton
  * @param id The id of the competition
  */
 export const leaveCompetition = mutation({
@@ -131,15 +138,17 @@ export const leaveCompetition = mutation({
 
     const user = await verifyUser(db, auth)
     const team = await findTeamOfUser(db, user, id)
-    if (team.members.length == 1) {
-      await db.delete(team._id)
-    }
 
     // Remove the user from the team and the competition
     await db.delete(team.userMembership)
 
+    // Delete the team and don't ban the user if the team is only the user
+    if (team.members.length == 1) {
+      return await db.delete(team._id)
+    }
+
     // Add user to "banned" to stop the user from rejoining
     competition.banned.push(user._id)
-    await db.replace(competition._id, competition)
+    return await db.replace(competition._id, competition)
   },
 })
