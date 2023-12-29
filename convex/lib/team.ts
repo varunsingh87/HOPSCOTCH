@@ -105,28 +105,62 @@ export async function validateTeamJoinRequest(
 
 /**
  * Adds the user to a team and clears the join request
+ *
+ * Preconditions:
+ *  - Both parties have consented to adding the user (a join request indicating this exists for the team)
+ *  - User is in the competition
+ *
+ * Postconditions:
+ * - The join request for the user to the team no longer exists
+ * - the user's team is team
  * @param db The database object
  * @param user The user joining the team
- * @param teamId The team id
+ * @param team The team the user will be added to
  * @throws Error
  */
 export async function addUserToTeam(
   db: GenericDatabaseWriter<DataModel>,
   user: { _id: Id<'users'> },
-  teamId: Id<'teams'>
+  team: {
+    _id: Id<'teams'>
+    competition: Id<'competitions'>
+    joinRequests: Array<{
+      user: Id<'users'>
+      teamConsent: boolean
+      userConsent: boolean
+    }>
+  }
 ) {
-  const team = await db.get(teamId)
-  if (!team) throw new Error('The team does not exist')
+  const joinRequestIndex = team.joinRequests.findIndex(
+    (item) => item.user == user._id
+  )
+  const joinRequest = team.joinRequests[joinRequestIndex]
 
-  const joinIndex = team.joinRequests.findIndex((item) => item.user == user._id)
   if (
-    team.joinRequests[joinIndex].teamConsent &&
-    team.joinRequests[joinIndex].userConsent
+    joinRequestIndex < 0 ||
+    !joinRequest.teamConsent ||
+    !joinRequest.userConsent
   ) {
-    return
+    throw new Error(
+      'At least one party has not consented to the user joining the team'
+    )
   }
 
-  throw new Error(
-    'At least one party has not consented to the user joining the team'
+  // Clear join request
+  delete team.joinRequests[joinRequestIndex]
+  await db.patch(team._id, { joinRequests: team.joinRequests })
+
+  const teamOfJoiner = await findTeamOfUser(db, user, team.competition)
+  const participations = await db
+    .query('participants')
+    .withIndex('by_team', (q) => q.eq('team', teamOfJoiner._id))
+    .collect()
+  const joinerParticipation = participations.find(
+    (item) => item.user == user._id
   )
+  if (!joinerParticipation)
+    throw new Error('The user is not in the competition')
+
+  // Assigns the new team to the user
+  await db.patch(joinerParticipation._id, { team: team._id })
 }

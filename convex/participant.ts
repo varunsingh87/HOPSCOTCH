@@ -69,7 +69,7 @@ export const requestJoin = mutation({
         })
         return await db.replace(inviterTeam._id, inviterTeam)
       case RequestValidity.INVITED:
-        return await addUserToTeam(db, user, id)
+        return await addUserToTeam(db, user, inviterTeam)
       default:
         return requestValidity
     }
@@ -82,7 +82,7 @@ export const requestJoin = mutation({
  * Postcondition: If a join request by the joiner is already made, adds the user to the team because both sides have consented.
  * If no such join request exists, records the join request.
  *
- * @param joiner The user who is not on the team
+ * @param joinerId The user who is not on the team
  * @param competitionId The id of the competition that the team is in
  */
 export const inviteToTeam = mutation({
@@ -98,17 +98,22 @@ export const inviteToTeam = mutation({
 
     // Add user to team if the join request was in
     const validation = await validateTeamJoinRequest(db, inviterTeam, joiner)
-    if (!validation) {
-      return addUserToTeam(db, joiner, inviterTeam._id)
+    switch (validation) {
+      case RequestValidity.INVITED:
+        throw new Error('The invite was already made')
+      case RequestValidity.VALID:
+        // Record the join request
+        inviterTeam.joinRequests.push({
+          user: joiner._id,
+          userConsent: false,
+          teamConsent: true,
+        })
+        return await db.replace(inviterTeam._id, inviterTeam)
+      case RequestValidity.REQUESTED:
+        return addUserToTeam(db, joiner, inviterTeam)
+      default:
+        return validation
     }
-
-    // Record the join request
-    inviterTeam.joinRequests.push({
-      user: joiner._id,
-      userConsent: true,
-      teamConsent: false,
-    })
-    return await db.replace(inviterTeam._id, inviterTeam)
   },
 })
 
