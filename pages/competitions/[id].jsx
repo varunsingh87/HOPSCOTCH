@@ -1,24 +1,18 @@
 import classnames from 'classnames'
 import { ConvexHttpClient } from 'convex/browser'
-import { GenericId } from 'convex/values'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import {
-  Col,
   Container,
-  List,
   Nav,
-  Input,
   Button,
   NavItem,
   NavLink,
-  Row,
   TabContent,
   TabPane,
 } from 'reactstrap'
-import { useQuery, useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import Rules from '../../Components/rules'
 import SubmissionsList from '../../Components/submissionsList'
@@ -40,7 +34,10 @@ export default function App(props) {
     if (activeTab !== tab) setActiveTab(tab)
   }
 
-  const router = useRouter()
+  const joinCompetition = useMutation(api.participant.joinCompetition)
+  const participation = useQuery(api.participant.readParticipant, {
+    competitionId: props.id,
+  })
 
   return (
     <div>
@@ -49,12 +46,21 @@ export default function App(props) {
       </Head>
       <Container className="text-center">
         <h2>{props.name}</h2>
-        <Link
-          href={`/submissions/new?competition=${props.id}`}
-          className="btn btn-outline-primary"
-        >
-          Enter Submission
-        </Link>
+        {participation ? (
+          <Link
+            href={`/submissions/new?competition=${props.id}`}
+            className="btn btn-outline-primary"
+          >
+            Enter Submission
+          </Link>
+        ) : (
+          <Button
+            color="primary"
+            onClick={() => joinCompetition({ id: props.id })}
+          >
+            Join Musathon
+          </Button>
+        )}
       </Container>
 
       <div className="mt-3">

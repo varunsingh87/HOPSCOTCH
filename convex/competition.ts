@@ -1,7 +1,6 @@
 import { v } from 'convex/values'
 import { query } from './_generated/server'
 import { mutation } from './_generated/server'
-import { competition } from './schema'
 
 export const listCompetitions = query({
   handler: async ({ db }) => {
@@ -17,9 +16,23 @@ export const getCompetition = query({
 })
 
 export const addCompetition = mutation({
-  args: { competition: v.object(competition) },
-  handler: async ({ db }, { competition }) => {
-    await db.insert('competitions', competition)
+  args: {
+    name: v.string(),
+    organizer: v.string(),
+    access: v.string(),
+    prizeList: v.array(v.string()),
+    address: v.string(),
+    description: v.string(),
+    locationCategory: v.string(),
+    totalPrizeValue: v.number(),
+    rules: v.string(),
+    thumbnail: v.string(),
+  },
+  handler: async ({ db }, args) => {
+    await db.insert('competitions', {
+      ...args,
+      banned: [],
+    })
   },
 })
 

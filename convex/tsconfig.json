@@ -1,33 +1,33 @@
 {
-	/* This TypeScript project config describes the environment that
-	* Convex functions run in and is used to typecheck them.
-	* You can modify it, but some settings required to use Convex.
-	*/
+  /* This TypeScript project config describes the environment that
+  * Convex functions run in and is used to typecheck them.
+  * You can modify it, but some settings required to use Convex.
+  */
 
-	"compilerOptions": {
-		/* These settings are not required by Convex and can be modified. */
-		"allowJs": true,
-		"strict": true,
-		/* These compiler options are required by Convex */
-		"target": "ESNext",
-		"lib": [
-			"ES2021",
-			"dom"
-		],
-		"forceConsistentCasingInFileNames": true,
-		"allowSyntheticDefaultImports": true,
-		"module": "ESNext",
-		"moduleResolution": "Node",
-		"isolatedModules": true,
-		"noEmit": true,
-		// WARNING: DO NOT add "node" to types. This is required for Convex to run properly.
-		"types": []
-	},
-	"include": [
-		"./**/*",
-		"..\\node_modules\\convex\\dist\\esm\\environment\\index.d.ts"
-	],
-	"exclude": [
-		"./_generated"
-	]
+  "compilerOptions": {
+    /* These settings are not required by Convex and can be modified. */
+    "allowJs": true,
+    "strict": true,
+    /* These compiler options are required by Convex */
+    "target": "ESNext",
+    "lib": [
+      "ES2021",
+      "dom"
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "isolatedModules": true,
+    "noEmit": true,
+    // WARNING: DO NOT add "node" to types. This is required for Convex to run properly.
+    "types": []
+  },
+  "include": [
+    "./**/*",
+    "..\\node_modules\\convex\\dist\\esm\\environment\\index.d.ts"
+  ],
+  "exclude": [
+    "./_generated"
+  ]
 }

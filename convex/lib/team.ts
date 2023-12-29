@@ -1,18 +1,18 @@
 import { GenericDatabaseReader, GenericDatabaseWriter } from 'convex/server'
-import { DataModel, Id } from '../_generated/dataModel'
+import { Doc, DataModel, Id } from '../_generated/dataModel'
 import { RequestValidity } from '../../shared/info'
+import { ConvexError } from 'convex/values'
 
 /**
  * Efficient utility function for getting the information about a team given a user and competition
  * @param db The database reader object
  * @param user A user on the team
  * @param competition The competition this team is entered in
- * @return object containing information about team
- * @throws Error if the user is not in the competition
+ * @return object containing information about team or false if the team does not exist
  */
 export async function findTeamOfUser(
   db: GenericDatabaseReader<DataModel>,
-  user: { _id: Id<'users'> },
+  user: Doc<'users'>,
   competition: Id<'competitions'>
 ) {
   const participations = await db
@@ -36,7 +36,7 @@ export async function findTeamOfUser(
     }
   }
 
-  throw new Error('The user is not in that competition')
+  return false
 }
 
 /**
@@ -54,18 +54,8 @@ export async function findTeamOfUser(
  */
 export async function validateTeamJoinRequest(
   db: GenericDatabaseReader<DataModel>,
-  inviterTeam: {
-    _id: Id<'teams'>
-    competition: Id<'competitions'>
-    joinRequests: Array<{
-      user: Id<'users'>
-      teamConsent: boolean
-      userConsent: boolean
-    }>
-  },
-  joiner: {
-    _id: Id<'users'>
-  }
+  inviterTeam: Doc<'teams'>,
+  joiner: Doc<'users'>
 ): Promise<RequestValidity> {
   const inviterTeamParticipants = await db
     .query('participants')
@@ -83,6 +73,9 @@ export async function validateTeamJoinRequest(
   }
 
   const joinerTeam = await findTeamOfUser(db, joiner, inviterTeam.competition)
+  if (!joinerTeam) {
+    throw new ConvexError('The user is not in the competition')
+  }
   if (joinerTeam.members.length > 1) {
     return RequestValidity.COMMITTED
   }
@@ -115,42 +108,38 @@ export async function validateTeamJoinRequest(
  * - the user's team is team
  * @param db The database object
  * @param user The user joining the team
- * @param team The team the user will be added to
- * @throws Error
+ * @param invitingTeam The team the user will be added to
+ * @throws ConvexError If the preconditions are not met
  */
 export async function addUserToTeam(
   db: GenericDatabaseWriter<DataModel>,
-  user: { _id: Id<'users'> },
-  team: {
-    _id: Id<'teams'>
-    competition: Id<'competitions'>
-    joinRequests: Array<{
-      user: Id<'users'>
-      teamConsent: boolean
-      userConsent: boolean
-    }>
-  }
+  user: Doc<'users'>,
+  invitingTeam: Doc<'teams'>
 ) {
-  const joinRequestIndex = team.joinRequests.findIndex(
+  const joinRequestIndex = invitingTeam.joinRequests.findIndex(
     (item) => item.user == user._id
   )
-  const joinRequest = team.joinRequests[joinRequestIndex]
+  const joinRequest = invitingTeam.joinRequests[joinRequestIndex]
 
   if (
     joinRequestIndex < 0 ||
     !joinRequest.teamConsent ||
     !joinRequest.userConsent
   ) {
-    throw new Error(
+    throw new ConvexError(
       'At least one party has not consented to the user joining the team'
     )
   }
 
   // Clear join request
-  delete team.joinRequests[joinRequestIndex]
-  await db.patch(team._id, { joinRequests: team.joinRequests })
+  delete invitingTeam.joinRequests[joinRequestIndex]
+  await db.patch(invitingTeam._id, { joinRequests: invitingTeam.joinRequests })
 
-  const teamOfJoiner = await findTeamOfUser(db, user, team.competition)
+  const teamOfJoiner = await findTeamOfUser(db, user, invitingTeam.competition)
+  if (!teamOfJoiner) {
+    throw new ConvexError('The user is not in the competition')
+  }
+
   const participations = await db
     .query('participants')
     .withIndex('by_team', (q) => q.eq('team', teamOfJoiner._id))
@@ -158,9 +147,10 @@ export async function addUserToTeam(
   const joinerParticipation = participations.find(
     (item) => item.user == user._id
   )
-  if (!joinerParticipation)
-    throw new Error('The user is not in the competition')
+  if (!joinerParticipation) {
+    throw new ConvexError('An internal server error occurred')
+  }
 
   // Assigns the new team to the user
-  await db.patch(joinerParticipation._id, { team: team._id })
+  await db.patch(joinerParticipation._id, { team: invitingTeam._id })
 }

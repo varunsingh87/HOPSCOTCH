@@ -9,7 +9,7 @@ export default function SubmissionsList(props) {
   return (
     <CardGroup>
       {participants?.map((participant) => (
-        <Card>{JSON.stringify(participant)}</Card>
+        <Card>{JSON.stringify(participant.submission)}</Card>
       ))}
     </CardGroup>
   )
