@@ -16,11 +16,11 @@ import {
 } from 'reactstrap'
 import { GeoAlt, X } from 'react-bootstrap-icons'
 import { useMutation } from 'convex/react'
-import { Access } from '../shared/info'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { api } from '../convex/_generated/api'
+import { Access } from '../shared/info'
 
 export default function App(props: object) {
   const router = useRouter()
@@ -44,13 +44,13 @@ export default function App(props: object) {
 
   async function handleAddCompetition(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    // setNewCompetitionName('') // reset text entry box
-    // setAccess(Access.INITIAL)
-    // setLocationCategory('')
-    // setTotalPrizeValue(500)
-    // setPrizeList([])
-    // setDescription('')
-    // setRules('')
+    setNewCompetitionName('') // reset text entry box
+    setAccess(Access.INITIAL)
+    setLocationCategory('')
+    setTotalPrizeValue(500)
+    setPrizeList([])
+    setDescription('')
+    setRules('')
     await addCompetition({
       name: newCompetitionName,
       organizer: user,

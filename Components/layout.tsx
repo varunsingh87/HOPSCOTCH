@@ -12,7 +12,7 @@ import {
   NavLink,
 } from 'reactstrap'
 import { useMutation } from 'convex/react'
-import { Logout } from '../shared/account-auth'
+import { Logout } from './account-auth'
 import { Search } from 'react-bootstrap-icons'
 import { api } from '../convex/_generated/api'
 

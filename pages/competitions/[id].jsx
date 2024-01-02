@@ -17,6 +17,7 @@ import { api } from '../../convex/_generated/api'
 import Rules from '../../Components/rules'
 import SubmissionsList from '../../Components/submissionsList'
 import Overview from '../../Components/overview'
+import { useAlert } from '../../Components/AlertProvider'
 
 const convex = new ConvexHttpClient(
   process.env.NEXT_PUBLIC_CONVEX_DEPLOYMENT_URL
@@ -24,8 +25,8 @@ const convex = new ConvexHttpClient(
 
 /**
  * @param props.id {string} The id of the competition
- * @param props.name {string}
- * @param props.thumbnail {string}
+ * @param props.name {string} The name of the competition
+ * @param props.thumbnail {string} The thumbnail of the competition
  */
 export default function App(props) {
   const [activeTab, setActiveTab] = useState(1)
@@ -38,6 +39,17 @@ export default function App(props) {
   const participation = useQuery(api.participant.readParticipant, {
     competitionId: props.id,
   })
+  const leaveCompetition = useMutation(api.participant.leaveCompetition)
+
+  const [openModal] = useAlert()
+  const handleLeaveCompetitionClick = () => {
+    openModal(
+      'Are you sure you would like to leave the competition? You cannot rejoin after leaving, and repeated use of this may result in action against your account.',
+      () => {
+        leaveCompetition({ id: props.id })
+      }
+    )
+  }
 
   return (
     <div>
@@ -47,12 +59,17 @@ export default function App(props) {
       <Container className="text-center">
         <h2>{props.name}</h2>
         {participation ? (
-          <Link
-            href={`/submissions/new?competition=${props.id}`}
-            className="btn btn-outline-primary"
-          >
-            Enter Submission
-          </Link>
+          <>
+            <Link
+              href={`/submissions/new?competition=${props.id}`}
+              className="btn btn-outline-primary"
+            >
+              Enter Submission
+            </Link>
+            <Button color="danger" onClick={handleLeaveCompetitionClick}>
+              Leave Competition
+            </Button>
+          </>
         ) : (
           <Button
             color="primary"
@@ -126,7 +143,6 @@ export default function App(props) {
 }
 
 export async function getStaticProps(context) {
-  console.log('[getStaticProps]' + JSON.stringify(context))
   const competition = await convex.query(
     api.competition.getCompetition,
     context.params
