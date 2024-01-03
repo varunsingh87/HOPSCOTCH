@@ -1,6 +1,16 @@
 import { v } from 'convex/values'
 import { query } from './_generated/server'
 import { mutation } from './_generated/server'
+import { listOwnParticipations } from './lib/team'
+import { verifyUser } from './user'
+
+export const listParticipatingCompetitions = query({
+  args: {},
+  handler: async ({ db, auth }) => {
+    const user = await verifyUser(db, auth)
+    return listOwnParticipations(db, user)
+  },
+})
 
 export const listCompetitions = query({
   handler: async ({ db }) => {

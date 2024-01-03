@@ -3,7 +3,7 @@ import { v } from 'convex/values'
 import { submission } from './schema'
 
 export const addSubmission = mutation({
-  args: { teamId: v.id('teams'), submission },
+  args: { teamId: v.id('teams'), submission: v.object(submission) },
   handler: async ({ db }, { teamId, submission }) => {
     return await db.patch(teamId, { submission })
   },

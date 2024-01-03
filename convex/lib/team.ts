@@ -1,7 +1,39 @@
 import { GenericDatabaseReader, GenericDatabaseWriter } from 'convex/server'
-import { Doc, DataModel, Id } from '../_generated/dataModel'
+import { DataModel, Doc, Id } from '../_generated/dataModel'
 import { RequestValidity } from '../../shared/info'
 import { ConvexError } from 'convex/values'
+
+/**
+ * Lists the teams and competition a user is in
+ * Side Effects: Removes participation rows for a user for teams that does not exist
+ * @param db The database object. Note: must be a writer for the above side effect
+ * @param user The user whose teams/competitions are getting listed
+ */
+export async function listOwnParticipations(
+  db: GenericDatabaseReader<DataModel>,
+  user: Doc<'users'>
+) {
+  const participations = await db
+    .query('participants')
+    .withIndex('by_user', (q) => q.eq('user', user._id))
+    .collect()
+
+  return Promise.all(
+    participations.map(async (item) => {
+      const team = await db.get(item.team)
+      // If the team does not exist remove the row
+      if (!team) {
+        return {}
+      }
+      const competition = await db.get(team.competition)
+      return {
+        participation: item,
+        team,
+        competition,
+      }
+    })
+  )
+}
 
 /**
  * Efficient utility function for getting the information about a team given a user and competition
@@ -15,28 +47,21 @@ export async function findTeamOfUser(
   user: Doc<'users'>,
   competition: Id<'competitions'>
 ) {
-  const participations = await db
+  const ownParticipations = await listOwnParticipations(db, user)
+  const currentParticipation = ownParticipations.find(
+    (item) => item?.competition?._id == competition
+  )
+  if (!currentParticipation || !currentParticipation.team) return false
+
+  const members = await db
     .query('participants')
-    .withIndex('by_user', (q) => q.eq('user', user._id))
+    .withIndex('by_team', (q) => q.eq('team', currentParticipation.team._id))
     .collect()
-
-  for (const participation of participations) {
-    const team = await db.get(participation.team)
-    if (!team) continue
-
-    const currentCompetition = await db.get(team.competition)
-    if (!currentCompetition) continue
-
-    if (currentCompetition._id == competition) {
-      const members = await db
-        .query('participants')
-        .withIndex('by_team', (q) => q.eq('team', team._id))
-        .collect()
-      return { members, ...team, userMembership: participation._id }
-    }
+  return {
+    members,
+    ...currentParticipation.team,
+    userMembership: currentParticipation.participation._id,
   }
-
-  return false
 }
 
 /**

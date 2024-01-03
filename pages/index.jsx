@@ -5,7 +5,6 @@ import { GeoAlt } from 'react-bootstrap-icons'
 import {
   Col,
   Card,
-  CardBody,
   CardGroup,
   CardImg,
   CardSubtitle,
@@ -62,7 +61,9 @@ export default function App() {
   // Dynamically update `competitions` in response to the output of
   // `listCompetitions.ts`.
   const competitions = useQuery(api.competition.listCompetitions)
-
+  const ownCompetitions = useQuery(
+    api.competition.listParticipatingCompetitions
+  )
   const router = useRouter()
 
   return (
@@ -73,6 +74,16 @@ export default function App() {
       <h1 className="text-center">Competitions</h1>
       <Row>
         <Col lg="10">
+          <h2>Your Competitions</h2>
+          <CardGroup className="my-3">
+            {ownCompetitions?.map((item) => (
+              <CompetitionView
+                key={item.participation._id}
+                {...item.competition}
+              />
+            ))}
+          </CardGroup>
+          <h2>Browse Competitions</h2>
           <CardGroup className="my-3">
             {competitions
               ?.filter(
