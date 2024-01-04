@@ -1,23 +1,14 @@
 import classnames from 'classnames'
 import { ConvexHttpClient } from 'convex/browser'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useState } from 'react'
-import {
-  Container,
-  Nav,
-  Button,
-  NavItem,
-  NavLink,
-  TabContent,
-  TabPane,
-} from 'reactstrap'
-import { useMutation, useQuery } from 'convex/react'
+import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
+import { useConvexAuth } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import Rules from '../../Components/rules'
 import SubmissionsList from '../../Components/submissionsList'
 import Overview from '../../Components/overview'
-import { useAlert } from '../../Components/AlertProvider'
+import AuthenticatedCompetition from '../../Components/authenticated/Competition'
 
 const convex = new ConvexHttpClient(
   process.env.NEXT_PUBLIC_CONVEX_DEPLOYMENT_URL
@@ -30,25 +21,10 @@ const convex = new ConvexHttpClient(
  */
 export default function App(props) {
   const [activeTab, setActiveTab] = useState(1)
+  const { isAuthenticated } = useConvexAuth()
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab)
-  }
-
-  const joinCompetition = useMutation(api.participant.joinCompetition)
-  const participation = useQuery(api.participant.readParticipant, {
-    competitionId: props.id,
-  })
-  const leaveCompetition = useMutation(api.participant.leaveCompetition)
-
-  const [openModal] = useAlert()
-  const handleLeaveCompetitionClick = () => {
-    openModal(
-      'Are you sure you would like to leave the competition? You cannot rejoin after leaving, and repeated use of this may result in action against your account.',
-      () => {
-        leaveCompetition({ id: props.id })
-      }
-    )
   }
 
   return (
@@ -56,30 +32,8 @@ export default function App(props) {
       <Head>
         <title>{props.name} | Musathon</title>
       </Head>
-      <Container className="text-center">
-        <h2>{props.name}</h2>
-        {participation ? (
-          <>
-            <Link
-              href={`/submissions/new?competition=${props.id}`}
-              className="btn btn-outline-primary"
-            >
-              Enter Submission
-            </Link>
-            <Button color="danger" onClick={handleLeaveCompetitionClick}>
-              Leave Competition
-            </Button>
-          </>
-        ) : (
-          <Button
-            color="primary"
-            onClick={() => joinCompetition({ id: props.id })}
-          >
-            Join Musathon
-          </Button>
-        )}
-      </Container>
 
+      {isAuthenticated ? <AuthenticatedCompetition {...props} /> : null}
       <div className="mt-3">
         <Nav tabs>
           <NavItem>

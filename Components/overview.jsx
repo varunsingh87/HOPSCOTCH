@@ -1,4 +1,4 @@
-import { Button, Col, Input, Row } from 'reactstrap'
+import { Col, Input, Row } from 'reactstrap'
 import { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { api } from '../convex/_generated/api'
@@ -7,7 +7,6 @@ export default function Overview(props) {
   const updateCompetitionThumbnail = useMutation(
     api.competition.updateThumbnail
   )
-  const deleteCompetition = useMutation(api.competition.deleteCompetition)
   const [thumbnail, setThumbnail] = useState(props.thumbnail)
 
   return (
@@ -30,14 +29,6 @@ export default function Overview(props) {
         >
           {props.name}
         </Input>
-        <Button
-          onClick={() => {
-            deleteCompetition(props.id)
-          }}
-          className="btn btn-danger"
-        >
-          Delete Competition
-        </Button>
       </Col>
     </Row>
   )

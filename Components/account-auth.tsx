@@ -7,19 +7,9 @@ export function Login() {
     return <button className="btn btn-primary">Loading...</button>
   }
   return (
-    <main className="py-4">
-      <h1 className="text-center">Hopscotch</h1>
-      <div className="text-center">
-        <span>
-          <button
-            className="btn btn-primary"
-            onClick={() => loginWithRedirect({})}
-          >
-            Log in
-          </button>
-        </span>
-      </div>
-    </main>
+    <button className="btn btn-primary" onClick={() => loginWithRedirect({})}>
+      Log in
+    </button>
   )
 }
 
@@ -29,7 +19,6 @@ export function Logout() {
   return (
     <div className="float-end">
       {/* We know this component only renders if the user is logged in. */}
-      {/* <p>Logged in{user!.name ? ` as ${user!.name}` : ""}</p> */}
       <img
         onClick={() => router.push('/profile')}
         src="https://picsum.photos/300/300"
@@ -40,7 +29,9 @@ export function Logout() {
       />
       <button
         className="btn btn-secondary float-end"
-        onClick={() => logout({ returnTo: window.location.origin })}
+        onClick={() =>
+          logout({ logoutParams: { returnTo: window.location.origin } })
+        }
       >
         Log out
       </button>

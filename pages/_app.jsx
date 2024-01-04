@@ -9,7 +9,6 @@ import {
   ConvexReactClient,
   Unauthenticated,
 } from 'convex/react'
-import { Login } from '../Components/account-auth'
 import { AlertProvider } from '../Components/AlertProvider'
 
 const convex = new ConvexReactClient(
@@ -31,13 +30,17 @@ function MyApp({ Component, pageProps }) {
         <ConvexProviderWithAuth0 client={convex}>
           <Authenticated>
             <Layout>
-              <Component {...pageProps} />
+              <Component {...pageProps} authenticated={true} />
             </Layout>
           </Authenticated>
           <Unauthenticated>
-            <Login />
+            <Layout>
+              <Component {...pageProps} authenticated={false} />
+            </Layout>
           </Unauthenticated>
-          <AuthLoading>Loading...</AuthLoading>
+          <AuthLoading>
+            <h1>Loading...</h1>
+          </AuthLoading>
         </ConvexProviderWithAuth0>
       </Auth0Provider>
     </AlertProvider>
