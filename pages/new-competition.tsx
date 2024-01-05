@@ -1,30 +1,28 @@
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Button,
+  ButtonGroup,
+  Col,
   Container,
   Form,
   FormGroup,
   Input,
   Label,
-  ButtonGroup,
-  Button,
-  Col,
-  List,
-  Row,
-  Breadcrumb,
-  BreadcrumbItem,
   ListGroup,
-  Table,
   ListGroupItem,
+  Row,
 } from 'reactstrap'
 import { GeoAlt, X } from 'react-bootstrap-icons'
 import { useMutation } from 'convex/react'
-import { Access } from '../lib/info'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { api } from '../convex/_generated/api'
+import { Access } from '../shared/info'
 
-export default function App(props) {
+export default function App(props: object) {
   const router = useRouter()
 
   const [user, setUser] = useState('user name')
@@ -42,8 +40,9 @@ export default function App(props) {
   const [address, setAddress] = useState('')
   const [access, setAccess] = useState(Access.PUBLIC)
   const [description, setDescription] = useState('')
+  const [rules, setRules] = useState('')
 
-  async function handleAddCompetition(event) {
+  async function handleAddCompetition(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setNewCompetitionName('') // reset text entry box
     setAccess(Access.INITIAL)
@@ -51,6 +50,7 @@ export default function App(props) {
     setTotalPrizeValue(500)
     setPrizeList([])
     setDescription('')
+    setRules('')
     await addCompetition({
       name: newCompetitionName,
       organizer: user,
@@ -60,9 +60,10 @@ export default function App(props) {
       description,
       locationCategory,
       totalPrizeValue,
+      rules,
       thumbnail: 'https://picsum.photos/318/180',
     })
-    router.push('/')
+    await router.push('/')
   }
 
   return (
@@ -114,7 +115,7 @@ export default function App(props) {
                 max="300000"
                 value={totalPrizeValue}
                 placeholder="Total Prize Value"
-                onChange={(e) => setTotalPrizeValue(e.target.value)}
+                onChange={(e) => setTotalPrizeValue(parseInt(e.target.value))}
               />
             </FormGroup>
 
@@ -130,7 +131,7 @@ export default function App(props) {
               <Label for="prizeList">
                 Add Prize <input list="prizeList" name="prizeList" />
               </Label>
-              <datalist id="prizeList" multiple>
+              <datalist id="prizeList">
                 <option value="Wolfram Alpha Pro Subscription" />
                 <option value="Lifetime Taskade Upgrade" />
                 <option value="MLH Fellowship Fast Track" />
@@ -210,6 +211,16 @@ export default function App(props) {
                   Invite Only
                 </Button>
               </ButtonGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="rules">Rules and Rubric</Label>
+              <textarea
+                id="rules"
+                value={rules}
+                onChange={(e) => setRules(e.target.value)}
+                className="form-control"
+              />
             </FormGroup>
 
             <Input

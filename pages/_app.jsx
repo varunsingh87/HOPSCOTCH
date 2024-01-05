@@ -9,7 +9,7 @@ import {
   ConvexReactClient,
   Unauthenticated,
 } from 'convex/react'
-import { Login } from '../lib/account-auth'
+import { AlertProvider } from '../Components/AlertProvider'
 
 const convex = new ConvexReactClient(
   process.env.NEXT_PUBLIC_CONVEX_DEPLOYMENT_URL
@@ -17,27 +17,33 @@ const convex = new ConvexReactClient(
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Auth0Provider
-      domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN}
-      clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}
-      authorizationParams={{
-        redirect_uri: typeof location !== 'undefined' ? location.origin : '',
-      }}
-      useRefreshTokens={true}
-      cacheLocation="localstorage"
-    >
-      <ConvexProviderWithAuth0 client={convex}>
-        <Authenticated>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </Authenticated>
-        <Unauthenticated>
-          <Login />
-        </Unauthenticated>
-        <AuthLoading>Loading...</AuthLoading>
-      </ConvexProviderWithAuth0>
-    </Auth0Provider>
+    <AlertProvider>
+      <Auth0Provider
+        domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN}
+        clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}
+        authorizationParams={{
+          redirect_uri: typeof location !== 'undefined' ? location.origin : '',
+        }}
+        useRefreshTokens={true}
+        cacheLocation="localstorage"
+      >
+        <ConvexProviderWithAuth0 client={convex}>
+          <Authenticated>
+            <Layout>
+              <Component {...pageProps} authenticated={true} />
+            </Layout>
+          </Authenticated>
+          <Unauthenticated>
+            <Layout>
+              <Component {...pageProps} authenticated={false} />
+            </Layout>
+          </Unauthenticated>
+          <AuthLoading>
+            <h1>Loading...</h1>
+          </AuthLoading>
+        </ConvexProviderWithAuth0>
+      </Auth0Provider>
+    </AlertProvider>
   )
 }
 

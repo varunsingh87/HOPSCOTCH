@@ -10,23 +10,45 @@ export const competition = {
   description: v.string(),
   locationCategory: v.string(),
   totalPrizeValue: v.number(),
+  rules: v.optional(v.string()),
   thumbnail: v.string(),
+  banned: v.array(v.id('users')),
 }
 
 export const submission = {
-  competition: v.id('competitions'),
-  name: v.string(),
   title: v.string(),
   description: v.string(),
 }
 
+export const joinRequest = {
+  user: v.id('users'),
+  teamConsent: v.boolean(),
+  userConsent: v.boolean(),
+}
+
+const team = {
+  competition: v.id('competitions'),
+  submission: v.optional(v.object(submission)),
+  joinRequests: v.array(v.object(joinRequest)),
+}
+
+const user = {
+  name: v.string(),
+  tokenIdentifier: v.string(),
+  pictureURL: v.string(),
+  bio: v.string(),
+}
+
+const participant = {
+  team: v.id('teams'),
+  user: v.id('users'),
+}
+
 export default defineSchema({
-  users: defineTable({
-    name: v.string(),
-    tokenIdentifier: v.string(),
-    pictureURL: v.string(),
-    bio: v.string(),
-  }),
+  users: defineTable(user).index('primary', ['tokenIdentifier']),
   competitions: defineTable(competition),
-  submissions: defineTable(submission),
+  teams: defineTable(team).index('by_competition', ['competition']),
+  participants: defineTable(participant)
+    .index('by_user', ['user'])
+    .index('by_team', ['team']),
 })
