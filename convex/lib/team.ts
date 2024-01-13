@@ -5,7 +5,6 @@ import { ConvexError } from 'convex/values'
 
 /**
  * Lists the teams and competition a user is in
- * Side Effects: Removes participation rows for a user for teams that does not exist
  * @param db The database object. Note: must be a writer for the above side effect
  * @param user The user whose teams/competitions are getting listed
  */
