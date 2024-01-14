@@ -18,6 +18,7 @@ import type * as competition from "../competition.js";
 import type * as lib_team from "../lib/team.js";
 import type * as participant from "../participant.js";
 import type * as submission from "../submission.js";
+import type * as team from "../team.js";
 import type * as user from "../user.js";
 
 /**
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   "lib/team": typeof lib_team;
   participant: typeof participant;
   submission: typeof submission;
+  team: typeof team;
   user: typeof user;
 }>;
 export declare const api: FilterApi<

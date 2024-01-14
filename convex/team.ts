@@ -1,9 +1,9 @@
 import { query } from './_generated/server'
 import { ConvexError, v } from 'convex/values'
 import { verifyUser } from './user'
-import { listOwnParticipations } from './lib/team'
+import { listCompetitionTeams, listOwnParticipations } from './lib/team'
 
-export const listTeams = query({
+export const list = query({
   args: { competitionId: v.id('competitions') },
   handler: async ({ db, auth }, { competitionId }) => {
     const user = await verifyUser(db, auth)
@@ -15,6 +15,6 @@ export const listTeams = query({
       throw new ConvexError('User is not in the competition')
     }
 
-    // TODO: listCompetitionTeams
+    return await listCompetitionTeams(db, competitionId)
   },
 })

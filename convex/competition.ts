@@ -12,6 +12,9 @@ export const listParticipatingCompetitions = query({
   },
 })
 
+/**
+ * List the competitions
+ */
 export const listCompetitions = query({
   handler: async ({ db }) => {
     return await db.query('competitions').order('desc').collect()
@@ -25,6 +28,9 @@ export const getCompetition = query({
   },
 })
 
+/**
+ * Adds a competition
+ */
 export const addCompetition = mutation({
   args: {
     name: v.string(),

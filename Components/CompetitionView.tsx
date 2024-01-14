@@ -10,8 +10,8 @@ import { GeoAlt } from 'react-bootstrap-icons'
  * @returns {JSX.Element}
  * @constructor
  */
-export default function CompetitionView(props) {
-  const startDate = new Date(props._creationTime).toLocaleDateString()
+export default function CompetitionView(props: any): JSX.Element {
+  // const startDate = new Date(props._creationTime).toLocaleDateString()
   return (
     <Card
       className={classnames(

@@ -8,7 +8,7 @@ import { api } from '../convex/_generated/api'
 import ParticipatingCompetitions from '../Components/ParticipatingCompetitions'
 import CompetitionView from '../Components/CompetitionView'
 
-export default function App(props) {
+export default function App(props: { authenticated: boolean }) {
   // Dynamically update `competitions` in response to the output of
   // `listCompetitions.ts`.
   const competitions = useQuery(api.competition.listCompetitions)
@@ -30,8 +30,8 @@ export default function App(props) {
               ?.filter(
                 (item) =>
                   !router.query.q ||
-                  item.name?.includes(router.query.q) ||
-                  item.description?.includes(router.query.q)
+                  item.name?.includes(router.query.q as string) ||
+                  item.description?.includes(router.query.q as string)
               )
               .map((competition) => (
                 <CompetitionView key={competition._id} {...competition} />
@@ -43,7 +43,7 @@ export default function App(props) {
             <p>All Network Sites</p>
             <List type="unstyled">
               <li>
-                <img width="20" src="/MusathonLogo.png" />
+                <img width={20} src="/MusathonLogo.png" alt="" />
                 <Link href="/musathons">Musathons</Link>
               </li>
               <li>

@@ -20,18 +20,20 @@ export async function listOwnParticipations(
   return Promise.all(
     participations.map(async (item) => {
       const team = await db.get(item.team)
-      // If the team does not exist remove the row
-      if (!team) {
-        return {}
-      }
+      if (!team) return [] // Skip if the team does not exist
+
       const competition = await db.get(team.competition)
-      return {
-        participation: item,
-        team,
-        competition,
-      }
+      if (!competition) return [] // Skip if the competition does not exist
+
+      return [
+        {
+          participation: item,
+          team,
+          competition,
+        },
+      ]
     })
-  )
+  ).then((item) => item.flat())
 }
 
 /**
@@ -177,4 +179,14 @@ export async function addUserToTeam(
 
   // Assigns the new team to the user
   await db.patch(joinerParticipation._id, { team: invitingTeam._id })
+}
+
+export async function listCompetitionTeams(
+  db: GenericDatabaseReader<DataModel>,
+  competitionId: Id<'competitions'>
+) {
+  return await db
+    .query('teams')
+    .withIndex('by_competition', (q) => q.eq('competition', competitionId))
+    .collect()
 }
