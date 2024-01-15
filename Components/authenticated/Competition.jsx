@@ -47,7 +47,7 @@ export default function AuthenticatedCompetition(props) {
       )}
       <Button
         onClick={() => {
-          deleteCompetition(props.id)
+          deleteCompetition({ id: props.id })
         }}
         className="btn btn-danger ms-3"
       >

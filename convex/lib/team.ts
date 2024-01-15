@@ -54,13 +54,10 @@ export async function findTeamOfUser(
   )
   if (!currentParticipation || !currentParticipation.team) return false
 
-  const members = await db
-    .query('participants')
-    .withIndex('by_team', (q) => q.eq('team', currentParticipation.team._id))
-    .collect()
+  const teamAndMembers = await verifyTeam(db, currentParticipation.team._id)
+
   return {
-    members,
-    ...currentParticipation.team,
+    ...teamAndMembers,
     userMembership: currentParticipation.participation._id,
   }
 }
@@ -189,4 +186,26 @@ export async function listCompetitionTeams(
     .query('teams')
     .withIndex('by_competition', (q) => q.eq('competition', competitionId))
     .collect()
+}
+
+/**
+ * Gets the information on a team independent of a user
+ * @param db Database object
+ * @param teamId Id of the team getting read
+ * @return object containing the team info (top-level properties) and members (array)
+ */
+export async function verifyTeam(
+  db: GenericDatabaseReader<DataModel>,
+  teamId: Id<'teams'>
+) {
+  const team = await db.get(teamId)
+  if (!team)
+    throw new ConvexError({ code: 404, message: 'The team does not exist' })
+
+  const members = await db
+    .query('participants')
+    .withIndex('by_team', (q) => q.eq('team', teamId))
+    .collect()
+
+  return { ...team, members }
 }

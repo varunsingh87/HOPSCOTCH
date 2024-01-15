@@ -24,7 +24,7 @@ export const listCompetitions = query({
 export const getCompetition = query({
   args: { id: v.id('competitions') },
   handler: async ({ db }, { id }) => {
-    return (await db.get(id)) ?? {}
+    return await db.get(id)
   },
 })
 
