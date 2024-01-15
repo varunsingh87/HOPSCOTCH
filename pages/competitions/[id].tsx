@@ -11,6 +11,7 @@ import Overview from '../../Components/overview'
 import AuthenticatedCompetition from '../../Components/authenticated/Competition'
 import {GetStaticPaths, GetStaticProps} from "next";
 import {Id} from "../../convex/_generated/dataModel";
+import Teams from "../../Components/Teams";
 
 const convex = new ConvexHttpClient(
     process.env.NEXT_PUBLIC_CONVEX_DEPLOYMENT_URL || ''
@@ -72,6 +73,13 @@ export default function App(props: any) {
                         </NavLink>
                     </NavItem>
                     <NavItem>
+                        <NavLink className={classnames({active: activeTab === 4})}
+                                 onClick={() => toggle(4)}
+                                 style={{cursor: 'pointer'}}>
+                            Find Teammates
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
                         <NavLink
                             className={classnames({active: activeTab === 5})}
                             onClick={() => {
@@ -87,8 +95,13 @@ export default function App(props: any) {
                     <TabPane tabId={1}>
                         <Overview {...props} />
                     </TabPane>
-                    <Rules/>
+                    <TabPane tabId={2}>
+                        <Rules/>
+                    </TabPane>
                     <TabPane tabId={3}>{JSON.stringify(props.prizeList)}</TabPane>
+                    <TabPane tabId={4}>
+                        <Teams competitionId={props.id}/>
+                    </TabPane>
                     <TabPane tabId={5}>
                         <SubmissionsList id={props.id}/>
                     </TabPane>
@@ -125,7 +138,7 @@ export const getStaticProps = (async (context) => {
 
 export const getStaticPaths = (async () => {
     const competitions = await convex.query(api.competition.listCompetitions)
-    //  console.log(competitions)
+
     return {
         paths: competitions.map((item) => {
             return {

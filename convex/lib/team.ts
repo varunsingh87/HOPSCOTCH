@@ -58,7 +58,7 @@ export async function findTeamOfUser(
 
   return {
     ...teamAndMembers,
-    userMembership: currentParticipation.participation._id,
+    userMembership: currentParticipation.participation,
   }
 }
 
@@ -178,14 +178,22 @@ export async function addUserToTeam(
   await db.patch(joinerParticipation._id, { team: invitingTeam._id })
 }
 
+/**
+ * Gets a list of the teams in a competition with the participants
+ * @param db
+ * @param competitionId
+ */
 export async function listCompetitionTeams(
   db: GenericDatabaseReader<DataModel>,
   competitionId: Id<'competitions'>
 ) {
-  return await db
+  const teamRows = await db
     .query('teams')
     .withIndex('by_competition', (q) => q.eq('competition', competitionId))
     .collect()
+  const fullTeamInfo = teamRows.map(async (item) => verifyTeam(db, item._id))
+
+  return Promise.all(fullTeamInfo)
 }
 
 /**
@@ -202,10 +210,19 @@ export async function verifyTeam(
   if (!team)
     throw new ConvexError({ code: 404, message: 'The team does not exist' })
 
-  const members = await db
+  const memberRows = await db
     .query('participants')
     .withIndex('by_team', (q) => q.eq('team', teamId))
     .collect()
+  const memberUserList = memberRows.map(async (item) => {
+    const user = await db.get(item.user)
+    if (!user) return []
+    return [user]
+  })
+  const members = await Promise.all(memberUserList).then((item) => item.flat())
 
-  return { ...team, members }
+  return {
+    ...team,
+    members,
+  }
 }

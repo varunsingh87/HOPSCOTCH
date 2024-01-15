@@ -2,17 +2,16 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Col, CardGroup, Row, List, Container } from 'reactstrap'
-import { useQuery } from 'convex/react'
+import { useConvexAuth, useQuery } from 'convex/react'
 import styles from '../styles/Home.module.css'
 import { api } from '../convex/_generated/api'
-import ParticipatingCompetitions from '../Components/ParticipatingCompetitions'
 import CompetitionView from '../Components/CompetitionView'
 
-export default function App(props: { authenticated: boolean }) {
+export default function App() {
   // Dynamically update `competitions` in response to the output of
   // `listCompetitions.ts`.
   const competitions = useQuery(api.competition.listCompetitions)
-
+  const { isAuthenticated } = useConvexAuth()
   const router = useRouter()
 
   return (
@@ -23,7 +22,7 @@ export default function App(props: { authenticated: boolean }) {
       <h1 className="text-center">Competitions</h1>
       <Row>
         <Col lg="10">
-          {props.authenticated ? <ParticipatingCompetitions /> : null}
+          {/*{isAuthenticated ? <ParticipatingCompetitions /> : null}*/}
           <h2>Browse Competitions</h2>
           <CardGroup className="my-3">
             {competitions

@@ -1,12 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { ConvexError, v } from 'convex/values'
 import { verifyUser } from './user'
-import {
-  findTeamOfUser,
-  listCompetitionTeams,
-  listOwnParticipations,
-  verifyTeam,
-} from './lib/team'
+import { findTeamOfUser, listCompetitionTeams, verifyTeam } from './lib/team'
 
 /**
  * List teams in a competition
@@ -14,15 +9,6 @@ import {
 export const list = query({
   args: { competitionId: v.id('competitions') },
   handler: async ({ db, auth }, { competitionId }) => {
-    const user = await verifyUser(db, auth)
-    const participants = await listOwnParticipations(db, user)
-    const userIsInCompetition = participants.some(
-      (item) => item.competition?._id == competitionId
-    )
-    if (!userIsInCompetition) {
-      throw new ConvexError('User is not in the competition')
-    }
-
     return await listCompetitionTeams(db, competitionId)
   },
 })
@@ -55,7 +41,7 @@ export const sendMessage = mutation({
     const user = await verifyUser(db, auth)
     const team = await verifyTeam(db, teamId)
 
-    const userIsOnTeam = team.members.some((item) => item.user == user._id)
+    const userIsOnTeam = team.members.some((item) => item?._id == user._id)
     if (!userIsOnTeam) {
       throw new ConvexError({
         code: 403,

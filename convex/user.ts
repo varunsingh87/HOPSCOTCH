@@ -43,10 +43,13 @@ export const storeUser = mutation({
     // Check if we've already stored this identity before.
     //filter for users
     const user = await verifyUser(db, auth)
-    if (user !== null) {
+    if (typeof user !== 'undefined') {
+      console.log(user)
       // If we've seen this identity before but the name has changed, patch the value.
-      if (user.name != identity.name) {
-        await db.patch<'users'>(user._id, { name: identity.name! })
+      if (user.name != identity.nickname && user.name != identity.name) {
+        await db.patch<'users'>(user._id, {
+          name: identity.nickname || identity.name!,
+        })
       }
       if (user.pictureURL != identity.pictureUrl) {
         await db.patch<'users'>(user._id, { pictureURL: identity.pictureUrl! })
@@ -56,9 +59,10 @@ export const storeUser = mutation({
       }
       return user._id
     }
+    console.log(identity)
     // If it's a new identity, create a new `User`.
     return db.insert('users', {
-      name: identity.name!,
+      name: identity.nickname || identity.name!,
       tokenIdentifier: identity.tokenIdentifier,
       pictureURL: identity.pictureUrl!,
       bio: bio || '',

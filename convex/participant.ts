@@ -8,6 +8,9 @@ import {
 } from './lib/team'
 import { RequestValidity } from '../shared/info'
 
+/**
+ * @inheritDoc team.findTeamOfUser
+ */
 export const readParticipant = query({
   args: { competitionId: v.id('competitions') },
   handler: async ({ db, auth }, { competitionId }) => {
@@ -168,7 +171,7 @@ export const leaveCompetition = mutation({
     }
 
     // Remove the user from the team and the competition
-    await db.delete(team.userMembership)
+    await db.delete(team.userMembership._id)
 
     // Delete the team and don't ban the user if the team is only the user
     if (team.members.length == 1) {
