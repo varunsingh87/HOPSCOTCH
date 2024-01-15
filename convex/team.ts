@@ -34,7 +34,18 @@ export const get = query({
   args: { competitionId: v.id('competitions') },
   handler: async ({ db, auth }, { competitionId }) => {
     const user = await verifyUser(db, auth)
-    return await findTeamOfUser(db, user, competitionId)
+    const teamInfo = await findTeamOfUser(db, user, competitionId)
+    if (!teamInfo) {
+      throw new ConvexError({
+        code: 404,
+        message: 'No team exists for a competition you are not in',
+      })
+    }
+    const messages = await db
+      .query('messages')
+      .withIndex('by_team', (q) => q.eq('team', teamInfo._id))
+      .collect()
+    return { ...teamInfo, messages }
   },
 })
 
@@ -58,27 +69,5 @@ export const sendMessage = mutation({
       sender: user._id,
       message,
     })
-  },
-})
-
-export const listMessages = query({
-  args: { teamId: v.id('teams') },
-  handler: async ({ db, auth }, { teamId }) => {
-    const user = await verifyUser(db, auth)
-    const team = await verifyTeam(db, teamId)
-
-    const userIsOnTeam = team.members.some((item) => item.user == user._id)
-    if (!userIsOnTeam) {
-      throw new ConvexError({
-        code: 403,
-        message:
-          'Permission denied: You may only see the chat of your own team',
-      })
-    }
-
-    return await db
-      .query('messages')
-      .withIndex('by_team', (q) => q.eq('team', teamId))
-      .collect()
   },
 })
