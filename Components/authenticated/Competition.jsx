@@ -53,6 +53,7 @@ export default function AuthenticatedCompetition(props) {
       >
         Delete Competition
       </Button>
+      <Link href={`./${props.id}/team`}>View Team</Link>
     </Container>
   )
 }

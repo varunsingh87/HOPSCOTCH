@@ -2,6 +2,7 @@ import { GenericDatabaseReader, GenericDatabaseWriter } from 'convex/server'
 import { DataModel, Doc, Id } from '../_generated/dataModel'
 import { RequestValidity } from '../../shared/info'
 import { ConvexError } from 'convex/values'
+import { convertToUserDocumentArray, fulfillAndFlatten } from './helpers'
 
 /**
  * Lists the teams and competition a user is in
@@ -17,7 +18,7 @@ export async function listOwnParticipations(
     .withIndex('by_user', (q) => q.eq('user', user._id))
     .collect()
 
-  return Promise.all(
+  return await fulfillAndFlatten(
     participations.map(async (item) => {
       const team = await db.get(item.team)
       if (!team) return [] // Skip if the team does not exist
@@ -33,7 +34,7 @@ export async function listOwnParticipations(
         },
       ]
     })
-  ).then((item) => item.flat())
+  )
 }
 
 /**
@@ -124,6 +125,7 @@ export async function validateTeamJoinRequest(
  *
  * Preconditions:
  *  - Both parties have consented to adding the user (a join request indicating this exists for the team)
+ *  AKA validateTeamJoinRequest returns ACCEPTED
  *  - User is in the competition
  *
  * Postconditions:
@@ -132,30 +134,18 @@ export async function validateTeamJoinRequest(
  * @param db The database object
  * @param user The user joining the team
  * @param invitingTeam The team the user will be added to
- * @throws ConvexError If the preconditions are not met
+ * @throws ConvexError The user is not in the competition
  */
 export async function addUserToTeam(
   db: GenericDatabaseWriter<DataModel>,
   user: Doc<'users'>,
   invitingTeam: Doc<'teams'>
 ) {
-  const joinRequestIndex = invitingTeam.joinRequests.findIndex(
-    (item) => item.user == user._id
-  )
-  const joinRequest = invitingTeam.joinRequests[joinRequestIndex]
-
-  if (
-    joinRequestIndex < 0 ||
-    !joinRequest.teamConsent ||
-    !joinRequest.userConsent
-  ) {
-    throw new ConvexError(
-      'At least one party has not consented to the user joining the team'
-    )
-  }
-
   // Clear join request
-  delete invitingTeam.joinRequests[joinRequestIndex]
+  invitingTeam.joinRequests = invitingTeam.joinRequests.filter(
+    (item) => item.user != user._id
+  )
+
   await db.patch(invitingTeam._id, { joinRequests: invitingTeam.joinRequests })
 
   const teamOfJoiner = await findTeamOfUser(db, user, invitingTeam.competition)
@@ -176,6 +166,11 @@ export async function addUserToTeam(
 
   // Assigns the new team to the user
   await db.patch(joinerParticipation._id, { team: invitingTeam._id })
+
+  // Delete the team and don't ban the user if the team is only the user
+  if (teamOfJoiner.members.length == 1) {
+    return await db.delete(teamOfJoiner._id)
+  }
 }
 
 /**
@@ -214,12 +209,10 @@ export async function verifyTeam(
     .query('participants')
     .withIndex('by_team', (q) => q.eq('team', teamId))
     .collect()
-  const memberUserList = memberRows.map(async (item) => {
-    const user = await db.get(item.user)
-    if (!user) return []
-    return [user]
-  })
-  const members = await Promise.all(memberUserList).then((item) => item.flat())
+  const members = await convertToUserDocumentArray(
+    db,
+    memberRows.map((item) => item.user)
+  )
 
   return {
     ...team,

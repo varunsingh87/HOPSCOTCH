@@ -1,10 +1,13 @@
-import {Button, Col, Container, Input, List, Row} from 'reactstrap'
-import {useMutation, useQuery} from 'convex/react'
+import {Button, Col, Container, List, Row} from 'reactstrap'
+import {useConvexAuth, useMutation, useQuery} from 'convex/react'
 import {api} from '../../../convex/_generated/api'
 import {Id} from "../../../convex/_generated/dataModel";
 import {GetStaticPaths, GetStaticProps} from "next";
 import {ConvexHttpClient} from "convex/browser";
-import React, {useState} from "react";
+import React from "react";
+import TeamMembers from "../../../Components/team/TeamMembers";
+import Chat from "../../../Components/Chat";
+import {UserBubble} from "../../../Components/User";
 
 const convex = new ConvexHttpClient(
     process.env.NEXT_PUBLIC_CONVEX_DEPLOYMENT_URL || ''
@@ -12,8 +15,8 @@ const convex = new ConvexHttpClient(
 
 export default function Team(props: any) {
     const teamInfo = useQuery(api.team.get, {competitionId: props.id})
-    const sendMessage = useMutation(api.team.sendMessage)
-    const [newMessage, setNewMessage] = useState('')
+    const acceptJoin = useMutation(api.participant.inviteToTeam)
+    const {isAuthenticated} = useConvexAuth()
 
     if (!teamInfo) {
         return (
@@ -23,26 +26,48 @@ export default function Team(props: any) {
         )
     }
 
+    if (!isAuthenticated) {
+        return (
+            <Container>
+                You must be signed in to view your team
+            </Container>
+        )
+    }
+
+    const handleAcceptJoin = (joinerId: Id<'users'>) => {
+        acceptJoin({
+            joinerId,
+            competitionId: props.id
+        })
+    }
+
     return (
         <Container>
             <h1>Team Dashboard</h1>
             <Row>
                 <Col className="border" md={6}>
+                    <TeamMembers members={teamInfo.members}/>
+                </Col>
+                <Col md={6} className="border">
+                    <h2>Join Requests</h2>
                     <List className="p-2">
-                        {teamInfo.members.map(item => (
-                            <li className="border list-unstyled">{item._id} {item.user}</li>
+                        {teamInfo.joinRequests.map(request => (
+                            <li className="border list-unstyled">
+                                <UserBubble {...request.user} />
+                                {request.teamConsent ? "Team Consent" : ""}
+                                {request.userConsent ? "User Consent" : ""}
+                                <Button onClick={() => handleAcceptJoin(request.user._id)}>Accept</Button>
+                            </li>
                         ))}
                     </List>
                 </Col>
+            </Row>
+            <Row>
+                <Col md={6}></Col>
                 <Col md={6} className="border">
-                    <List className="p-0 mt-2">
-                        {teamInfo.messages.map(item => <li
-                            className="border p-2 list-unstyled">{item.message}</li>)}
-                    </List>
-                    <Input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)}/>
-                    <Button className="my-2" color="primary"
-                            onClick={() => sendMessage({teamId: teamInfo._id, message: newMessage})}>Chat</Button>
+                    <Chat id={teamInfo._id} messages={teamInfo.messages}/>
                 </Col>
+
             </Row>
         </Container>
     )

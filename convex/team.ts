@@ -2,6 +2,7 @@ import { mutation, query } from './_generated/server'
 import { ConvexError, v } from 'convex/values'
 import { verifyUser } from './user'
 import { findTeamOfUser, listCompetitionTeams, verifyTeam } from './lib/team'
+import { includeUserDocument } from './lib/helpers'
 
 /**
  * List teams in a competition
@@ -31,7 +32,22 @@ export const get = query({
       .query('messages')
       .withIndex('by_team', (q) => q.eq('team', teamInfo._id))
       .collect()
-    return { ...teamInfo, messages }
+
+    const joinRequests = await includeUserDocument(db, teamInfo.joinRequests)
+
+    return {
+      ...teamInfo,
+      messages: await Promise.all(
+        messages.map(async (item) => {
+          return {
+            ...item,
+            ownMessage: item.sender == user._id,
+            sender: await db.get(item.sender),
+          }
+        })
+      ),
+      joinRequests,
+    }
   },
 })
 
@@ -41,7 +57,7 @@ export const sendMessage = mutation({
     const user = await verifyUser(db, auth)
     const team = await verifyTeam(db, teamId)
 
-    const userIsOnTeam = team.members.some((item) => item?._id == user._id)
+    const userIsOnTeam = team.members.some((item) => item._id == user._id)
     if (!userIsOnTeam) {
       throw new ConvexError({
         code: 403,

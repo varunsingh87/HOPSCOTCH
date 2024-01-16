@@ -6,6 +6,8 @@ import { useConvexAuth, useQuery } from 'convex/react'
 import styles from '../styles/Home.module.css'
 import { api } from '../convex/_generated/api'
 import CompetitionView from '../Components/CompetitionView'
+import React from 'react'
+import ParticipatingCompetitions from '../Components/ParticipatingCompetitions'
 
 export default function App() {
   // Dynamically update `competitions` in response to the output of
@@ -22,7 +24,7 @@ export default function App() {
       <h1 className="text-center">Competitions</h1>
       <Row>
         <Col lg="10">
-          {/*{isAuthenticated ? <ParticipatingCompetitions /> : null}*/}
+          {isAuthenticated ? <ParticipatingCompetitions /> : null}
           <h2>Browse Competitions</h2>
           <CardGroup className="my-3">
             {competitions
