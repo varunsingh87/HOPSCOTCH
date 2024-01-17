@@ -1,3 +1,5 @@
+import { ConvexError } from 'convex/values'
+
 export default {
   providers: [
     {
@@ -12,7 +14,7 @@ export default {
   verify: async (auth) => {
     const identity = await auth.getUserIdentity()
     if (!identity) {
-      throw new Error('Authentication not present')
+      throw new ConvexError('Authentication not present')
     }
     return identity
   },

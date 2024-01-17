@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Check,
-  Pencil,
-  Save,
-  Save2,
-  Save2Fill,
-  SaveFill,
-} from 'react-bootstrap-icons'
+import { Check, Pencil } from 'react-bootstrap-icons'
 import {
   Card,
   CardBody,
@@ -21,7 +14,7 @@ import {
   Label,
   Row,
 } from 'reactstrap'
-import { useQuery, useMutation, useConvexAuth } from 'convex/react'
+import { useQuery, useConvexAuth } from 'convex/react'
 import { api } from '../convex/_generated/api'
 
 function SubmissionViewer() {
@@ -64,7 +57,6 @@ export default function Profile() {
   const { isAuthenticated } = useConvexAuth()
   const user = useQuery(api.user.getUser)
   const [bio, setBio] = useState('Loading Bio...')
-  const storeUser = useMutation(api.user.storeUser)
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -72,10 +64,6 @@ export default function Profile() {
       setBio(user.bio)
     }
   }, [user])
-
-  async function saveBio() {
-    await storeUser(bio)
-  }
 
   // TODO: Base on NoteFlight profile page: https://www.noteflight.com/profile/e747973656d52d4b41ebe1ff8ebf1cbc8792d7f7
 
@@ -88,21 +76,14 @@ export default function Profile() {
       <div className="d-flex flex-row mb-4">
         <img
           alt=""
-          src="https://picsum.photos/300/300"
+          src={user?.pictureURL}
           width="200"
           height="200"
           className="rounded-circle float-start pt-3"
         />
         <div className="d-flex flex-column ms-5 me-auto">
-          {!editMode ? (
-            <h1 className="display-1 mb-3">{user?.name}</h1>
-          ) : (
-            <Input
-              className="mb-3"
-              value={user?.name}
-              onChange={(e) => storeUser(user?.name)}
-            />
-          )}
+          <h1 className="display-1 mb-3">{user?.name}</h1>
+
           <h2>About</h2>
           {!editMode ? (
             <p>{bio}</p>
@@ -110,8 +91,8 @@ export default function Profile() {
             <textarea
               style={{ resize: 'none' }}
               value={bio}
-              rows="10"
-              cols="75"
+              rows={10}
+              cols={75}
               onChange={(e) => setBio(e.target.value)}
               className="p-3"
             />
@@ -158,7 +139,7 @@ export default function Profile() {
           </Form>
         </div>
         {!editMode ? (
-          <Pencil onClick={(e) => setEditMode(true)} className="m-3" />
+          <Pencil onClick={() => setEditMode(true)} className="m-3" />
         ) : (
           <Check onClick={() => setEditMode(false)} className="m-3" />
         )}

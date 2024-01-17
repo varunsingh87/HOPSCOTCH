@@ -1,11 +1,11 @@
 import { GenericDatabaseReader, GenericDatabaseWriter } from 'convex/server'
 import { DataModel, Doc, Id } from '../_generated/dataModel'
-import { RequestValidity } from '../../shared/info'
+import { RequestValidity } from '../../lib/shared'
 import { ConvexError } from 'convex/values'
+import { convertToUserDocumentArray, fulfillAndFlatten } from './helpers'
 
 /**
  * Lists the teams and competition a user is in
- * Side Effects: Removes participation rows for a user for teams that does not exist
  * @param db The database object. Note: must be a writer for the above side effect
  * @param user The user whose teams/competitions are getting listed
  */
@@ -18,19 +18,21 @@ export async function listOwnParticipations(
     .withIndex('by_user', (q) => q.eq('user', user._id))
     .collect()
 
-  return Promise.all(
+  return await fulfillAndFlatten(
     participations.map(async (item) => {
       const team = await db.get(item.team)
-      // If the team does not exist remove the row
-      if (!team) {
-        return {}
-      }
+      if (!team) return [] // Skip if the team does not exist
+
       const competition = await db.get(team.competition)
-      return {
-        participation: item,
-        team,
-        competition,
-      }
+      if (!competition) return [] // Skip if the competition does not exist
+
+      return [
+        {
+          participation: item,
+          team,
+          competition,
+        },
+      ]
     })
   )
 }
@@ -53,14 +55,11 @@ export async function findTeamOfUser(
   )
   if (!currentParticipation || !currentParticipation.team) return false
 
-  const members = await db
-    .query('participants')
-    .withIndex('by_team', (q) => q.eq('team', currentParticipation.team._id))
-    .collect()
+  const teamAndMembers = await verifyTeam(db, currentParticipation.team._id)
+
   return {
-    members,
-    ...currentParticipation.team,
-    userMembership: currentParticipation.participation._id,
+    ...teamAndMembers,
+    userMembership: currentParticipation.participation,
   }
 }
 
@@ -126,6 +125,7 @@ export async function validateTeamJoinRequest(
  *
  * Preconditions:
  *  - Both parties have consented to adding the user (a join request indicating this exists for the team)
+ *  AKA validateTeamJoinRequest returns ACCEPTED
  *  - User is in the competition
  *
  * Postconditions:
@@ -134,30 +134,18 @@ export async function validateTeamJoinRequest(
  * @param db The database object
  * @param user The user joining the team
  * @param invitingTeam The team the user will be added to
- * @throws ConvexError If the preconditions are not met
+ * @throws ConvexError The user is not in the competition
  */
 export async function addUserToTeam(
   db: GenericDatabaseWriter<DataModel>,
   user: Doc<'users'>,
   invitingTeam: Doc<'teams'>
 ) {
-  const joinRequestIndex = invitingTeam.joinRequests.findIndex(
-    (item) => item.user == user._id
-  )
-  const joinRequest = invitingTeam.joinRequests[joinRequestIndex]
-
-  if (
-    joinRequestIndex < 0 ||
-    !joinRequest.teamConsent ||
-    !joinRequest.userConsent
-  ) {
-    throw new ConvexError(
-      'At least one party has not consented to the user joining the team'
-    )
-  }
-
   // Clear join request
-  delete invitingTeam.joinRequests[joinRequestIndex]
+  invitingTeam.joinRequests = invitingTeam.joinRequests.filter(
+    (item) => item.user != user._id
+  )
+
   await db.patch(invitingTeam._id, { joinRequests: invitingTeam.joinRequests })
 
   const teamOfJoiner = await findTeamOfUser(db, user, invitingTeam.competition)
@@ -178,4 +166,56 @@ export async function addUserToTeam(
 
   // Assigns the new team to the user
   await db.patch(joinerParticipation._id, { team: invitingTeam._id })
+
+  // Delete the team and don't ban the user if the team is only the user
+  if (teamOfJoiner.members.length == 1) {
+    return await db.delete(teamOfJoiner._id)
+  }
+}
+
+/**
+ * Gets a list of the teams in a competition with the participants
+ * @param db
+ * @param competitionId
+ */
+export async function listCompetitionTeams(
+  db: GenericDatabaseReader<DataModel>,
+  competitionId: Id<'competitions'>
+) {
+  const teamRows = await db
+    .query('teams')
+    .withIndex('by_competition', (q) => q.eq('competition', competitionId))
+    .collect()
+  const fullTeamInfo = teamRows.map(async (item) => verifyTeam(db, item._id))
+
+  return Promise.all(fullTeamInfo)
+}
+
+/**
+ * Gets the information on a team independent of a user
+ * @param db Database object
+ * @param teamId Id of the team getting read
+ * @return object containing the team info (top-level properties) and members (array)
+ */
+export async function verifyTeam(
+  db: GenericDatabaseReader<DataModel>,
+  teamId: Id<'teams'>
+) {
+  const team = await db.get(teamId)
+  if (!team)
+    throw new ConvexError({ code: 404, message: 'The team does not exist' })
+
+  const memberRows = await db
+    .query('participants')
+    .withIndex('by_team', (q) => q.eq('team', teamId))
+    .collect()
+  const members = await convertToUserDocumentArray(
+    db,
+    memberRows.map((item) => item.user)
+  )
+
+  return {
+    ...team,
+    members,
+  }
 }

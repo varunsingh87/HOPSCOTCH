@@ -12,6 +12,9 @@ export const listParticipatingCompetitions = query({
   },
 })
 
+/**
+ * List the competitions
+ */
 export const listCompetitions = query({
   handler: async ({ db }) => {
     return await db.query('competitions').order('desc').collect()
@@ -21,10 +24,13 @@ export const listCompetitions = query({
 export const getCompetition = query({
   args: { id: v.id('competitions') },
   handler: async ({ db }, { id }) => {
-    return (await db.get(id)) ?? {}
+    return await db.get(id)
   },
 })
 
+/**
+ * Adds a competition
+ */
 export const addCompetition = mutation({
   args: {
     name: v.string(),
@@ -50,6 +56,7 @@ export const deleteCompetition = mutation({
   args: { id: v.id('competitions') },
   handler: async ({ db }, { id }) => {
     await db.delete(id)
+    // TODO: New table for submissions attached to a team so these can be separated
   },
 })
 

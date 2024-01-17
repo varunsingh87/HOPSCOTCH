@@ -1,5 +1,4 @@
 import { Button, Container } from 'reactstrap'
-import Link from 'next/link'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useAlert } from '../AlertProvider'
@@ -27,12 +26,6 @@ export default function AuthenticatedCompetition(props) {
       <h2>{props.name}</h2>
       {participation ? (
         <>
-          <Link
-            href={`/submissions/new?competition=${props.id}`}
-            className="btn btn-outline-primary me-2"
-          >
-            Enter Submission
-          </Link>
           <Button color="danger" onClick={handleLeaveCompetitionClick}>
             Leave Competition
           </Button>
@@ -47,7 +40,7 @@ export default function AuthenticatedCompetition(props) {
       )}
       <Button
         onClick={() => {
-          deleteCompetition(props.id)
+          deleteCompetition({ id: props.id })
         }}
         className="btn btn-danger ms-3"
       >
