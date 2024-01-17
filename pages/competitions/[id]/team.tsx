@@ -54,9 +54,16 @@ export default function Team(props: any) {
                         {teamInfo.joinRequests.map(request => (
                             <li className="border list-unstyled">
                                 <UserBubble {...request.user} />
-                                {request.teamConsent ? "Team Consent" : ""}
-                                {request.userConsent ? "User Consent" : ""}
                                 <Button onClick={() => handleAcceptJoin(request.user._id)}>Accept</Button>
+                            </li>
+                        ))}
+                    </List>
+                    <h2>Pending Invitations</h2>
+                    <List className="p-2">
+                        {teamInfo.invitations.map(invitation => (
+                            <li className="border list-unstyled">
+                                <UserBubble {...invitation.user} />
+                                {invitation.user.name}
                             </li>
                         ))}
                     </List>

@@ -46,7 +46,8 @@ export const get = query({
           }
         })
       ),
-      joinRequests,
+      joinRequests: joinRequests.filter((item) => item.userConsent),
+      invitations: joinRequests.filter((item) => item.teamConsent),
     }
   },
 })

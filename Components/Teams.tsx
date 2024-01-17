@@ -18,11 +18,8 @@ export default function Teams(props: any) {
     setJoinButtonMessage('Join requested!')
   }
 
-  const handleInviteClick = (
-    joinerId: Id<'users'>,
-    competitionId: Id<'competitions'>
-  ) => {
-    invite({ joinerId, competitionId })
+  const handleInviteClick = (joinerId: Id<'users'>) => {
+    invite({ joinerId, competitionId: props.competitionId })
     setInviteBtnMsg('Invite sent!')
   }
 
@@ -44,6 +41,19 @@ export default function Teams(props: any) {
                       alt={'Profile picture of ' + member.name}
                     />{' '}
                     {member.name}
+                    <Button
+                      className="ms-2"
+                      color="primary"
+                      hidden={
+                        participant &&
+                        participant.userMembership.team == item._id
+                      }
+                      onClick={() => {
+                        handleInviteClick(member._id)
+                      }}
+                    >
+                      {inviteButtonMessage}
+                    </Button>
                   </ListInlineItem>
                 ))}
               </List>
@@ -58,18 +68,6 @@ export default function Teams(props: any) {
                 }}
               >
                 {joinButtonMessage}
-              </Button>
-              <Button
-                className="ms-2"
-                color="primary"
-                hidden={
-                  participant && participant.userMembership.team == item._id
-                }
-                onClick={() => {
-                  handleInviteClick
-                }}
-              >
-                {inviteButtonMessage}
               </Button>
             </li>
           ))}

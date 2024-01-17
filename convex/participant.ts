@@ -130,7 +130,9 @@ export const inviteToTeam = mutation({
           userConsent: false,
           teamConsent: true,
         })
-        return await db.replace(inviterTeam._id, inviterTeam)
+        return await db.patch(inviterTeam._id, {
+          joinRequests: inviterTeam.joinRequests,
+        })
       case RequestValidity.REQUESTED:
         return addUserToTeam(db, joiner, inviterTeam)
       default:
