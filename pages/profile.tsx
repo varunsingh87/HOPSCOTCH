@@ -14,7 +14,7 @@ import {
   Label,
   Row,
 } from 'reactstrap'
-import { useQuery, useMutation, useConvexAuth } from 'convex/react'
+import { useQuery, useConvexAuth } from 'convex/react'
 import { api } from '../convex/_generated/api'
 
 function SubmissionViewer() {
@@ -57,7 +57,6 @@ export default function Profile() {
   const { isAuthenticated } = useConvexAuth()
   const user = useQuery(api.user.getUser)
   const [bio, setBio] = useState('Loading Bio...')
-  const storeUser = useMutation(api.user.storeUser)
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -65,10 +64,6 @@ export default function Profile() {
       setBio(user.bio)
     }
   }, [user])
-
-  async function saveBio() {
-    await storeUser({ bio })
-  }
 
   // TODO: Base on NoteFlight profile page: https://www.noteflight.com/profile/e747973656d52d4b41ebe1ff8ebf1cbc8792d7f7
 
@@ -81,7 +76,7 @@ export default function Profile() {
       <div className="d-flex flex-row mb-4">
         <img
           alt=""
-          src="https://picsum.photos/300/300"
+          src={user?.pictureURL}
           width="200"
           height="200"
           className="rounded-circle float-start pt-3"

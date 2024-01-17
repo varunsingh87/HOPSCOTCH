@@ -28,8 +28,6 @@ export function AlertProvider(props) {
 
   const handleContinueClick = () => {
     setOpen(false)
-    console.debug('[handleContinueClick] message: ' + message)
-    console.info('[handleContinueClick] onContinue: ' + onContinue)
     onContinue()
   }
 

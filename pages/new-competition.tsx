@@ -20,9 +20,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { api } from '../convex/_generated/api'
-import { Access } from '../shared/info'
+import { Access } from '../lib/shared'
 
-export default function App(props: object) {
+export default function App() {
   const router = useRouter()
 
   const [user, setUser] = useState('user name')

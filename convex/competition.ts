@@ -56,6 +56,7 @@ export const deleteCompetition = mutation({
   args: { id: v.id('competitions') },
   handler: async ({ db }, { id }) => {
     await db.delete(id)
+    // TODO: New table for submissions attached to a team so these can be separated
   },
 })
 

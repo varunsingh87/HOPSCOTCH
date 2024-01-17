@@ -1,6 +1,6 @@
 import { GenericDatabaseReader, GenericDatabaseWriter } from 'convex/server'
 import { DataModel, Doc, Id } from '../_generated/dataModel'
-import { RequestValidity } from '../../shared/info'
+import { RequestValidity } from '../../lib/shared'
 import { ConvexError } from 'convex/values'
 import { convertToUserDocumentArray, fulfillAndFlatten } from './helpers'
 

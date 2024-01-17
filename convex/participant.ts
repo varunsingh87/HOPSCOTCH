@@ -6,7 +6,7 @@ import {
   addUserToTeam,
   validateTeamJoinRequest,
 } from './lib/team'
-import { RequestValidity } from '../shared/info'
+import { RequestValidity } from '../lib/shared'
 
 /**
  * @inheritDoc team.findTeamOfUser
@@ -65,8 +65,11 @@ export const joinCompetition = mutation({
  * @param id The id of the team that the user would like to join
  */
 export const requestJoin = mutation({
-  args: { id: v.id('teams') },
-  handler: async ({ db, auth }, { id }) => {
+  args: { id: v.id('teams'), pitch: v.optional(v.string()) },
+  handler: async (
+    { db, auth },
+    { id, pitch = 'Hey there! I would like to join your team.' }
+  ) => {
     const user = await verifyUser(db, auth)
     const inviterTeam = await db.get(id)
     if (!inviterTeam) {
@@ -84,6 +87,7 @@ export const requestJoin = mutation({
           user: user._id,
           userConsent: true,
           teamConsent: false,
+          pitch,
         })
         return await db.replace(inviterTeam._id, inviterTeam)
       case RequestValidity.INVITED:
@@ -105,8 +109,19 @@ export const requestJoin = mutation({
  * @param competitionId The id of the competition that the team is in
  */
 export const inviteToTeam = mutation({
-  args: { joinerId: v.id('users'), competitionId: v.id('competitions') },
-  handler: async ({ db, auth }, { joinerId, competitionId }) => {
+  args: {
+    joinerId: v.id('users'),
+    competitionId: v.id('competitions'),
+    pitch: v.optional(v.string()),
+  },
+  handler: async (
+    { db, auth },
+    {
+      joinerId,
+      competitionId,
+      pitch = 'Hey there! We would love for you to join our team. ',
+    }
+  ) => {
     const inviter = await verifyUser(db, auth)
     const inviterTeam = await findTeamOfUser(db, inviter, competitionId)
     if (!inviterTeam) {
@@ -129,6 +144,7 @@ export const inviteToTeam = mutation({
           user: joiner._id,
           userConsent: false,
           teamConsent: true,
+          pitch,
         })
         return await db.patch(inviterTeam._id, {
           joinRequests: inviterTeam.joinRequests,

@@ -24,6 +24,7 @@ export const joinRequest = {
   user: v.id('users'),
   teamConsent: v.boolean(),
   userConsent: v.boolean(),
+  pitch: v.string(),
 }
 
 const team = {

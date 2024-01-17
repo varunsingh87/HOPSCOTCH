@@ -1,8 +1,20 @@
-import { Button, Col, List, ListInlineItem, Row } from 'reactstrap'
+import {
+  Button,
+  Col,
+  Input,
+  Label,
+  List,
+  ListInlineItem,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+} from 'reactstrap'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../convex/_generated/api'
 import { useState } from 'react'
-import InvitesAndJoinRequests from './authenticated/InvitesAndJoinRequests'
+import InvitesAndJoinRequests from './authenticated/UserInvites'
 import { Id } from '../convex/_generated/dataModel'
 
 export default function Teams(props: any) {
@@ -14,14 +26,31 @@ export default function Teams(props: any) {
   const [inviteButtonMessage, setInviteBtnMsg] = useState('Invite to Team')
 
   const handleJoinClick = (id: Id<'teams'>) => {
+    setRequestJoinModal(false)
     requestJoin({ id })
     setJoinButtonMessage('Join requested!')
   }
 
+  const handleJoinModalOpen = () => {
+    setRequestJoinModal(true)
+  }
+
+  const [modal, setModal] = useState(false)
+  const [requestJoinModal, setRequestJoinModal] = useState(false)
+
   const handleInviteClick = (joinerId: Id<'users'>) => {
+    setModal(false)
     invite({ joinerId, competitionId: props.competitionId })
     setInviteBtnMsg('Invite sent!')
   }
+
+  const handleInviteModalOpen = () => {
+    setModal(true)
+  }
+
+  const toggle = () => setModal(!modal)
+
+  const toggleJoinRequestModal = () => setRequestJoinModal(!requestJoinModal)
 
   return (
     <Row>
@@ -48,12 +77,68 @@ export default function Teams(props: any) {
                         participant &&
                         participant.userMembership.team == item._id
                       }
-                      onClick={() => {
-                        handleInviteClick(member._id)
-                      }}
+                      onClick={handleInviteModalOpen}
                     >
                       {inviteButtonMessage}
                     </Button>
+                    <Modal isOpen={modal} toggle={toggle}>
+                      <ModalHeader toggle={toggle}>
+                        Invite {member.name}
+                      </ModalHeader>
+                      <ModalBody>
+                        <Label>
+                          A polite, helpful message will help this participant
+                          decide if this team is a good fit
+                        </Label>
+                        <Input
+                          type="text"
+                          placeholder="Make sure to include contact information"
+                        />
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button
+                          color="primary"
+                          onClick={() => handleInviteClick(member.user._id)}
+                        >
+                          Invite
+                        </Button>{' '}
+                        <Button color="secondary" onClick={toggle}>
+                          Cancel
+                        </Button>
+                      </ModalFooter>
+                    </Modal>
+                    <Modal
+                      isOpen={requestJoinModal}
+                      toggle={toggleJoinRequestModal}
+                    >
+                      <ModalHeader toggle={toggleJoinRequestModal}>
+                        Request to Join
+                      </ModalHeader>
+                      <ModalBody>
+                        <Label>
+                          Pitch your skills and interests to this team to
+                          persuade them to let you join them
+                        </Label>
+                        <Input
+                          type="text"
+                          placeholder="Make sure to include contact information"
+                        />
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button
+                          color="primary"
+                          onClick={() => handleJoinClick(item._id)}
+                        >
+                          Join
+                        </Button>{' '}
+                        <Button
+                          color="secondary"
+                          onClick={toggleJoinRequestModal}
+                        >
+                          Cancel
+                        </Button>
+                      </ModalFooter>
+                    </Modal>
                   </ListInlineItem>
                 ))}
               </List>
@@ -63,9 +148,7 @@ export default function Teams(props: any) {
                 }
                 disabled={!participant}
                 color="primary"
-                onClick={() => {
-                  handleJoinClick(item._id)
-                }}
+                onClick={handleJoinModalOpen}
               >
                 {joinButtonMessage}
               </Button>
