@@ -11,7 +11,7 @@ import { Doc, Id } from '../../convex/_generated/dataModel'
 import { useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { PersonFill, PersonPlus } from 'react-bootstrap-icons'
+import { PersonPlus } from 'react-bootstrap-icons'
 
 /**
  * Invite button for team joining in competitions
@@ -57,11 +57,15 @@ export default function InviteButton({
         hidden={
           !inviter ||
           teamOfJoiner._id == inviter._id ||
-          teamOfJoiner.members.length > 1
+          teamOfJoiner.members.length > 1 ||
+          inviter.joinRequests.some(
+            (item) => item.user == joiner._id && item.teamConsent
+          )
         }
         onClick={handleInviteModalOpen}
+        title={`Invite ${joiner.name} to your team`}
       >
-        <PersonPlus />
+        <PersonPlus size={20} /> {inviteButtonMessage}
       </Button>
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Invite {joiner.name}</ModalHeader>
