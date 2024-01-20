@@ -3,7 +3,9 @@ import classnames from 'classnames'
 import Link from 'next/link'
 import { useState } from 'react'
 import AuthenticatedCompetition from './authenticated/Competition'
-import { useConvexAuth } from 'convex/react'
+import { useConvexAuth, useQuery } from 'convex/react'
+import { api } from '../convex/_generated/api'
+import { Id } from '../convex/_generated/dataModel'
 
 export default function CompetitionNavbar(props: any) {
   const [activeTab, setActiveTab] = useState(props.tabId)
@@ -83,21 +85,46 @@ export default function CompetitionNavbar(props: any) {
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === 6 })}
-            onClick={() => {
-              toggle(6)
-            }}
-            tag={Link}
-            href={`/competitions/${props.id}/team`}
-          >
-            My Team
-          </NavLink>
+          {isAuthenticated ? (
+            <MyTeamLink
+              competitionId={props.id}
+              activeTab={activeTab}
+              toggle={toggle}
+            />
+          ) : null}
         </NavItem>
       </Nav>
       <TabContent activeTab={activeTab}>
         <TabPane tabId={props.tabId}>{props.children}</TabPane>
       </TabContent>
     </div>
+  )
+}
+
+function MyTeamLink({
+  toggle,
+  activeTab,
+  competitionId,
+}: {
+  toggle: (tab: number) => void
+  activeTab: number
+  competitionId: Id<'competitions'>
+}) {
+  const participation = useQuery(api.participant.readParticipant, {
+    competitionId,
+  })
+
+  return (
+    <NavLink
+      className={classnames({ active: activeTab === 6 })}
+      onClick={() => {
+        toggle(6)
+      }}
+      hidden={!participation}
+      tag={Link}
+      href={`/competitions/${competitionId}/team`}
+    >
+      My Team
+    </NavLink>
   )
 }

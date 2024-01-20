@@ -49,6 +49,8 @@ export default function InviteButton({
 
   const toggle = () => setModal(!modal)
 
+  if (!inviter) return null
+
   return (
     <div>
       <Button
