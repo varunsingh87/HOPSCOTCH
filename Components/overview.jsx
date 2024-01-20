@@ -23,7 +23,7 @@ export default function Overview(props) {
           onKeyDown={(e) => {
             console.info(e.key)
             if (e.key === 'Enter') {
-              updateCompetitionThumbnail(props.id, thumbnail)
+              updateCompetitionThumbnail({ id: props.id, newSrc: thumbnail })
             }
           }}
         >
