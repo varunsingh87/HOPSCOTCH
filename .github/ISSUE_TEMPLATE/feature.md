@@ -2,7 +2,7 @@
 name: Feature
 about: Story
 title: ''
-labels: enhancement
+labels: ''
 assignees: varunsingh87
 
 ---
