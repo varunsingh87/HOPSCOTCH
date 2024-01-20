@@ -9,7 +9,7 @@ import { includeUserDocument } from './lib/helpers'
  */
 export const list = query({
   args: { competitionId: v.id('competitions') },
-  handler: async ({ db, auth }, { competitionId }) => {
+  handler: async ({ db }, { competitionId }) => {
     const competitionTeams = await listCompetitionTeams(db, competitionId)
     competitionTeams.sort((a, b) => a.members.length - b.members.length)
     return competitionTeams

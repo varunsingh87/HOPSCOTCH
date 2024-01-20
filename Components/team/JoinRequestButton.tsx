@@ -37,6 +37,11 @@ export default function JoinRequestButton({
   const handleJoinModalOpen = () => {
     setRequestJoinModal(true)
   }
+
+  if (!joiner) {
+    return null
+  }
+
   return (
     <div>
       <Modal isOpen={requestJoinModal} toggle={toggleJoinRequestModal}>

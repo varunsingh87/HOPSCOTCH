@@ -1,5 +1,5 @@
 import { Col, List, ListInlineItem, Row } from 'reactstrap'
-import { useQuery } from 'convex/react'
+import { useConvexAuth, useQuery } from 'convex/react'
 import { api } from '../convex/_generated/api'
 import InvitesAndJoinRequests from './authenticated/UserInvites'
 import InviteButton from './team/InviteButton'
@@ -7,11 +7,14 @@ import JoinRequestButton from './team/JoinRequestButton'
 
 export default function Teams(props: any) {
   const teamList = useQuery(api.team.list, props)
+  const { isAuthenticated } = useConvexAuth()
 
   return (
     <Row>
       <Col md={6}>
-        <InvitesAndJoinRequests />
+        {isAuthenticated ? (
+          <InvitesAndJoinRequests competitionId={props.competitionId} />
+        ) : null}
       </Col>
       <Col md={6}>
         <List className="p-0">
@@ -26,18 +29,22 @@ export default function Teams(props: any) {
                       alt={'Profile picture of ' + member.name}
                     />{' '}
                     {member.name}
-                    <InviteButton
-                      competitionId={props.competitionId}
-                      joiner={member}
-                      teamOfJoiner={team}
-                    />
+                    {isAuthenticated ? (
+                      <InviteButton
+                        competitionId={props.competitionId}
+                        joiner={member}
+                        teamOfJoiner={team}
+                      />
+                    ) : null}
                   </ListInlineItem>
                 ))}
               </List>
-              <JoinRequestButton
-                competitionId={props.competitionId}
-                teamId={team._id}
-              />
+              {isAuthenticated ? (
+                <JoinRequestButton
+                  competitionId={props.competitionId}
+                  teamId={team._id}
+                />
+              ) : null}
             </li>
           ))}
         </List>
