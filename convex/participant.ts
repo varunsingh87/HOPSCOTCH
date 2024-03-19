@@ -9,7 +9,7 @@ import {
 import { RequestValidity } from '../lib/shared'
 
 /**
- * @inheritDoc team.findTeamOfUser
+ * Gets the information about the logged-in user for a competition and the user's teams
  */
 export const readParticipant = query({
   args: { competitionId: v.id('competitions') },
@@ -17,6 +17,45 @@ export const readParticipant = query({
     const user = await verifyUser(db, auth)
     return await findTeamOfUser(db, user, competitionId)
   },
+})
+
+export const readInvites = query({
+  args: { competitionId: v.id('competitions') },
+  handler: async ({ db, auth }, { competitionId }) => {
+    const user = await verifyUser(db, auth)
+    const userTeam = await findTeamOfUser(db, user, competitionId)
+    if (!userTeam) {
+      throw new ConvexError({
+        code: 400,
+        msg: "Must be on a team",
+        data: []
+      })
+    }
+
+    const teams = await db.query('teams')
+      .withIndex('by_competition').collect()
+
+    const teamsThatInvitedUser = teams
+      .filter(item => item.joinRequests
+        .some(item => item.user == user._id)
+      )
+
+    const teamListWithTeammates = teamsThatInvitedUser.map(async team => {
+      const teammates = await db.query('participants')
+        .withIndex('by_team', q => q.eq('team', team._id))
+        .collect()
+      const teammatesWithInfo = []
+      for (const teammate of teammates) {
+        const user = await db.get(teammate.user);
+        if (user)
+          teammatesWithInfo.push({...teammate, user })
+      }
+
+      return { ...team, teammates: teammatesWithInfo }
+    })
+
+    return await Promise.all(teamListWithTeammates)
+  }
 })
 
 /**
