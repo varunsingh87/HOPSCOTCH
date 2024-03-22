@@ -2,18 +2,23 @@ import { Button, Container, Input, List } from 'reactstrap'
 import React, { useState, KeyboardEvent } from 'react'
 import { useMutation } from 'convex/react'
 import { api } from '../convex/_generated/api'
-import { Id } from '../convex/_generated/dataModel'
+import { Doc, Id } from '../convex/_generated/dataModel'
 import classnames from 'classnames'
 import { UserBubble } from './User'
+import { FunctionReference } from 'convex/server'
 
-export default function Chat(props: { id: Id<'teams'>; messages: Array<any> }) {
-  const sendMessage = useMutation(api.team.sendMessage)
+type sendMessageFunction = (newMessage: string) => void;
+
+export default function Chat(props: {
+  sendMessage: sendMessageFunction;
+  messages: Array<any>
+}) {
   const [newMessage, setNewMessage] = useState('')
 
   const handleMessageSend = () => {
     if (!newMessage) return
     setNewMessage('')
-    sendMessage({ teamId: props.id, message: newMessage })
+    props.sendMessage(newMessage);
   }
 
   const handleEnterPressed = (e: KeyboardEvent) => {

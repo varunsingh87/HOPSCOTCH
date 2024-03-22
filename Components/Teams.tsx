@@ -1,22 +1,28 @@
 import { Col, List, ListInlineItem, Row } from 'reactstrap'
-import { useConvexAuth, useQuery } from 'convex/react'
+import { useConvexAuth, useMutation, useQuery } from 'convex/react'
 import { api } from '../convex/_generated/api'
 import InvitesAndJoinRequests from './authenticated/UserInvites'
 import InviteButton from './team/InviteButton'
 import JoinRequestButton from './team/JoinRequestButton'
+import Chat from './Chat'
 
 export default function Teams(props: any) {
   const teamList = useQuery(api.team.list, props)
   const { isAuthenticated } = useConvexAuth()
+  const sendMessage = useMutation(api.crosschat.sendMessage)
+  const listMessages = useMutation(api.crosschat.listMessages, {
+
+  })
 
   return (
     <Row>
-      <Col md={6}>
+      <Col md={3}>
         {isAuthenticated ? (
           <InvitesAndJoinRequests competitionId={props.competitionId} />
         ) : null}
       </Col>
-      <Col md={6}>
+      <Col md={5}>
+        <h1>All Teams</h1>
         <List className="p-0">
           {teamList?.map((team) => (
             <li key={team._id} className="border p-2 m-1 list-unstyled">
@@ -48,6 +54,11 @@ export default function Teams(props: any) {
             </li>
           ))}
         </List>
+      </Col>
+      <Col md={4}>
+        <h1>Chat</h1>
+        <Chat sendMessage={newMessage => sendMessage({message: newMessage})}
+              messages={} />
       </Col>
     </Row>
   )

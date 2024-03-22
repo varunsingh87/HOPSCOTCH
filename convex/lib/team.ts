@@ -104,7 +104,11 @@ export async function validateTeamJoinRequest(
     return RequestValidity.COMMITTED
   }
 
-  const joinRequest = inviterTeam.joinRequests.find(
+  const invitingTeamJoinRequests = await db.query('join_requests')
+    .withIndex('by_team', q => q.eq('team', inviterTeam._id))
+    .collect()
+
+  const joinRequest = invitingTeamJoinRequests.find(
     (item) => item.user == joiner._id
   )
   if (!joinRequest) {
@@ -141,12 +145,15 @@ export async function addUserToTeam(
   user: Doc<'users'>,
   invitingTeam: Doc<'teams'>
 ) {
-  // Clear join request
-  invitingTeam.joinRequests = invitingTeam.joinRequests.filter(
-    (item) => item.user != user._id
-  )
-
-  await db.patch(invitingTeam._id, { joinRequests: invitingTeam.joinRequests })
+  const userToTeamJoinRequest = await db
+    .query('join_requests')
+    .withIndex('by_team',
+        q => q.eq('team', invitingTeam._id)
+    )
+    .filter(q => q.eq(q.field('user'), user._id))
+    .first()
+  if (userToTeamJoinRequest)
+    await db.delete(userToTeamJoinRequest._id)
 
   const teamOfJoiner = await findTeamOfUser(db, user, invitingTeam.competition)
   if (!teamOfJoiner) {
@@ -214,8 +221,15 @@ export async function verifyTeam(
     memberRows.map((item) => item.user)
   )
 
+  const joinRequests = await db.query('join_requests')
+    .withIndex('by_team', q => q.eq('team', teamId))
+    .collect()
+
   return {
     ...team,
     members,
+    joinRequests
   }
 }
+
+

@@ -14,6 +14,7 @@ import Link from 'next/link'
 export default function Team(props: any) {
   const teamInfo = useQuery(api.team.get, { competitionId: props.id })
   const acceptJoin = useMutation(api.participant.inviteToTeam)
+  const sendMessage = useMutation(api.team.sendMessage)
 
   const handleAcceptJoin = (joinerId: Id<'users'>) => {
     acceptJoin({
@@ -72,7 +73,10 @@ export default function Team(props: any) {
         </Col>
         <Col md={6} className="border">
           {teamInfo ? (
-            <Chat id={teamInfo._id} messages={teamInfo.messages} />
+            <Chat
+              sendMessage={newMessage => sendMessage({teamId: teamInfo._id, message: newMessage})}
+              messages={teamInfo.messages}
+            />
           ) : null}
         </Col>
       </Row>

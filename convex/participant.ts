@@ -25,24 +25,18 @@ export const readInvites = query({
     const user = await verifyUser(db, auth)
     const userTeam = await findTeamOfUser(db, user, competitionId)
     if (!userTeam) {
-      throw new ConvexError({
-        code: 400,
-        msg: "Must be on a team",
-        data: []
-      })
+      return false
     }
 
-    const teams = await db.query('teams')
-      .withIndex('by_competition').collect()
+    const teamsThatInvitedUser = await db
+      .query('join_requests')
+      .withIndex('by_user', q => q.eq('user', user._id))
+      .filter(q => q.field('teamConsent'))
+      .collect()
 
-    const teamsThatInvitedUser = teams
-      .filter(item => item.joinRequests
-        .some(item => item.user == user._id)
-      )
-
-    const teamListWithTeammates = teamsThatInvitedUser.map(async team => {
+    const teamListWithTeammates = teamsThatInvitedUser.map(async joinRequest => {
       const teammates = await db.query('participants')
-        .withIndex('by_team', q => q.eq('team', team._id))
+        .withIndex('by_team', q => q.eq('team', joinRequest.team))
         .collect()
       const teammatesWithInfo = []
       for (const teammate of teammates) {
@@ -51,7 +45,7 @@ export const readInvites = query({
           teammatesWithInfo.push({...teammate, user })
       }
 
-      return { ...team, teammates: teammatesWithInfo }
+      return { ...joinRequest, teammates: teammatesWithInfo }
     })
 
     return await Promise.all(teamListWithTeammates)
@@ -86,7 +80,6 @@ export const joinCompetition = mutation({
     // Add user to competition and create new team
     const team = await db.insert('teams', {
       competition: id,
-      joinRequests: [],
     })
 
     return await db.insert('participants', { user: user._id, team })
@@ -122,13 +115,13 @@ export const requestJoin = mutation({
         throw new ConvexError('The request has already been made')
       case RequestValidity.VALID:
         // Record the join request
-        inviterTeam.joinRequests.push({
+        return await db.insert('join_requests', {
+          team: inviterTeam._id,
           user: user._id,
           userConsent: true,
           teamConsent: false,
           pitch,
         })
-        return await db.replace(inviterTeam._id, inviterTeam)
       case RequestValidity.INVITED:
         return await addUserToTeam(db, user, inviterTeam)
       default:
@@ -179,14 +172,12 @@ export const inviteToTeam = mutation({
         throw new ConvexError('The invite was already made')
       case RequestValidity.VALID:
         // Record the join request
-        inviterTeam.joinRequests.push({
+        return await db.insert('join_requests', {
+          team: inviterTeam._id,
           user: joiner._id,
           userConsent: false,
           teamConsent: true,
           pitch,
-        })
-        return await db.patch(inviterTeam._id, {
-          joinRequests: inviterTeam.joinRequests,
         })
       case RequestValidity.REQUESTED:
         return addUserToTeam(db, joiner, inviterTeam)
