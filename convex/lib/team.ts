@@ -232,4 +232,21 @@ export async function verifyTeam(
   }
 }
 
+/**
+ * Validates whether a user can see and send messages in a cross chat
+ * @param db The database object
+ * @param joinRequestInfo The join request that gives info on the team and user joining the team
+ * @param viewer The user who is trying to send a message or view the chat
+ */
+export async function validateCrossChatParticipation(
+  db: GenericDatabaseReader<DataModel>,
+  joinRequestInfo: Doc<'join_requests'>,
+  viewer: Id<'users'>
+): Promise<boolean> {
+
+  const invitingTeam = await verifyTeam(db, joinRequestInfo.team)
+  return invitingTeam.members.some(member => member._id == viewer) ||
+    joinRequestInfo.user == viewer
+}
+
 
