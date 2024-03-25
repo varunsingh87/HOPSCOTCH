@@ -6,6 +6,7 @@ import InviteButton from './team/InviteButton'
 import JoinRequestButton from './team/JoinRequestButton'
 import CrossChat from './CrossChat'
 import { useState } from 'react'
+import { Id } from '../convex/_generated/dataModel'
 
 export default function Teams(props: any) {
   const teamList = useQuery(api.team.list, props)
@@ -54,7 +55,7 @@ export default function Teams(props: any) {
         </List>
       </Col>
       <Col md={4}>
-        <CrossChat joinRequestId={currentCrossChat} />
+        <CrossChat joinRequestId={currentCrossChat as Id<'join_requests'>} />
       </Col>
     </Row>
   )
