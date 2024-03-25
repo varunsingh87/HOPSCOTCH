@@ -52,3 +52,13 @@ export async function fulfillAndFlatten(promiseList: Array<Promise<any>>) {
   const arr = await Promise.all(promiseList)
   return arr.flat()
 }
+
+export const DELETED_USER: Doc<'users'> = {
+  _id: '0' as Id<'users'>,
+  _creationTime: 0,
+  pictureURL: '/deleted-user.svg',
+  name: 'DeletedUser',
+  bio: '',
+  tokenIdentifier: ''
+}
+

@@ -1,24 +1,24 @@
 import { Button, Container, Input, List } from 'reactstrap'
 import React, { useState, KeyboardEvent } from 'react'
-import { useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { api } from '../convex/_generated/api'
-import { Doc, Id } from '../convex/_generated/dataModel'
 import classnames from 'classnames'
 import { UserBubble } from './User'
-import { FunctionReference } from 'convex/server'
+import { Id } from '../convex/_generated/dataModel'
 
-type sendMessageFunction = (newMessage: string) => void;
-
-export default function Chat(props: {
-  sendMessage: sendMessageFunction;
-  messages: Array<any>
+export default function CrossChat(props: {
+  joinRequestId: Id<'join_requests'>
 }) {
+  const sendMessage = useMutation(api.crosschat.sendMessage)
+  const messages = useQuery(api.crosschat.listMessages, {
+    request: props.joinRequestId
+  })
   const [newMessage, setNewMessage] = useState('')
 
   const handleMessageSend = () => {
     if (!newMessage) return
     setNewMessage('')
-    props.sendMessage(newMessage);
+    sendMessage({ message: newMessage, joinRequest: props.joinRequestId });
   }
 
   const handleEnterPressed = (e: KeyboardEvent) => {
@@ -27,19 +27,19 @@ export default function Chat(props: {
 
   return (
     <Container>
-      <h1>Team Chat</h1>
+      <h1>Cross Chat</h1>
       <List className="p-0 mt-2">
-        {props.messages.map((item) => (
+        {messages?.map(msg => (
           <li
             className={classnames(
               'p-2',
               'list-unstyled',
               'd-flex',
-              item.ownMessage ? 'flex-row-reverse align-items-end' : ''
+              msg.ownMessage ? 'flex-row-reverse align-items-end' : ''
             )}
           >
-            <UserBubble {...item.sender} />
-            <p className="border p-1 rounded mx-2">{item.message}</p>
+            <UserBubble {...msg.sender} />
+            <p className="border p-1 rounded mx-2">{msg.message}</p>
           </li>
         ))}
       </List>

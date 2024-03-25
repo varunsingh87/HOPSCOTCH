@@ -4,7 +4,7 @@ import { api } from '../../../convex/_generated/api'
 import { Id } from '../../../convex/_generated/dataModel'
 import React from 'react'
 import TeamMembers from '../../../Components/team/TeamMembers'
-import Chat from '../../../Components/Chat'
+import TeamChat from '../../../Components/TeamChat'
 import { UserBubble } from '../../../Components/User'
 import Head from 'next/head'
 import CompetitionNavbar from '../../../Components/CompetitionNavbar'
@@ -73,8 +73,8 @@ export default function Team(props: any) {
         </Col>
         <Col md={6} className="border">
           {teamInfo ? (
-            <Chat
-              sendMessage={newMessage => sendMessage({teamId: teamInfo._id, message: newMessage})}
+            <TeamChat
+              teamId={teamInfo._id}
               messages={teamInfo.messages}
             />
           ) : null}

@@ -16,13 +16,13 @@ export default function UserInvites(props: {
   return (
     <>
       <h1>Invites</h1>
-      {invites.map(team => (
+      {invites.map(invite => (
         <Card>
           <CardBody>
             <ul>
-              <TeamMembers members={team.teammates.map(teammate => teammate.user)} />
+              <TeamMembers members={invite.teammates.map(teammate => teammate.user)} />
             </ul>
-            <Button color="primary" onClick={() => acceptInvite({ id: team._id })}>Accept Invite</Button>
+            <Button color="primary" onClick={() => acceptInvite({ id: invite.team })}>Accept Invite</Button>
           </CardBody>
         </Card>
 

@@ -4,15 +4,13 @@ import { api } from '../convex/_generated/api'
 import InvitesAndJoinRequests from './authenticated/UserInvites'
 import InviteButton from './team/InviteButton'
 import JoinRequestButton from './team/JoinRequestButton'
-import Chat from './Chat'
+import CrossChat from './CrossChat'
+import { useState } from 'react'
 
 export default function Teams(props: any) {
   const teamList = useQuery(api.team.list, props)
+  const [currentCrossChat, setCurrentCrossChat] = useState('')
   const { isAuthenticated } = useConvexAuth()
-  const sendMessage = useMutation(api.crosschat.sendMessage)
-  const listMessages = useMutation(api.crosschat.listMessages, {
-
-  })
 
   return (
     <Row>
@@ -56,9 +54,7 @@ export default function Teams(props: any) {
         </List>
       </Col>
       <Col md={4}>
-        <h1>Chat</h1>
-        <Chat sendMessage={newMessage => sendMessage({message: newMessage})}
-              messages={} />
+        <CrossChat joinRequestId={currentCrossChat} />
       </Col>
     </Row>
   )

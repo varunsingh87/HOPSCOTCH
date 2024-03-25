@@ -115,13 +115,14 @@ export const requestJoin = mutation({
         throw new ConvexError('The request has already been made')
       case RequestValidity.VALID:
         // Record the join request
-        return await db.insert('join_requests', {
+        await db.insert('join_requests', {
           team: inviterTeam._id,
           user: user._id,
           userConsent: true,
           teamConsent: false,
           pitch,
         })
+        return RequestValidity.VALID
       case RequestValidity.INVITED:
         return await addUserToTeam(db, user, inviterTeam)
       default:

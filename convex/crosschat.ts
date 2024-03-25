@@ -2,6 +2,7 @@ import { mutation, query } from './_generated/server'
 import { ConvexError, v } from 'convex/values'
 import { verifyUser } from './user'
 import { validateCrossChatParticipation } from './lib/team'
+import { DELETED_USER } from './lib/helpers'
 
 /**
  * Sends a message to a cross-chat regarding a join request
@@ -56,7 +57,8 @@ export const listMessages = query({
     return Promise.all(messages.map(async message => {
       return {
         ...message,
-        sender: await db.get(message.sender) ?? { name: 'Deleted User', bio: '', pictureURL: '' }
+        ownMessage: message.sender == viewer._id,
+        sender: await db.get(message.sender) ?? DELETED_USER,
       }
     }))
   }
