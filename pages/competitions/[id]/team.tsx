@@ -4,7 +4,7 @@ import { api } from '../../../convex/_generated/api'
 import { Id } from '../../../convex/_generated/dataModel'
 import React from 'react'
 import TeamMembers from '../../../Components/team/TeamMembers'
-import Chat from '../../../Components/Chat'
+import TeamChat from '../../../Components/chat/TeamChat'
 import { UserBubble } from '../../../Components/User'
 import Head from 'next/head'
 import CompetitionNavbar from '../../../Components/CompetitionNavbar'
@@ -14,6 +14,7 @@ import Link from 'next/link'
 export default function Team(props: any) {
   const teamInfo = useQuery(api.team.get, { competitionId: props.id })
   const acceptJoin = useMutation(api.participant.inviteToTeam)
+  const sendMessage = useMutation(api.team.sendMessage)
 
   const handleAcceptJoin = (joinerId: Id<'users'>) => {
     acceptJoin({
@@ -36,7 +37,7 @@ export default function Team(props: any) {
           <h2>Join Requests</h2>
           <List className="p-2">
             {teamInfo?.joinRequests.map((request) => (
-              <li className="border list-unstyled">
+              <li key={request._id} className="border list-unstyled">
                 <UserBubble {...request.user} />
                 <p>{request.pitch}</p>
                 <Button onClick={() => handleAcceptJoin(request.user._id)}>
@@ -72,7 +73,10 @@ export default function Team(props: any) {
         </Col>
         <Col md={6} className="border">
           {teamInfo ? (
-            <Chat id={teamInfo._id} messages={teamInfo.messages} />
+            <TeamChat
+              teamId={teamInfo._id}
+              messages={teamInfo.messages}
+            />
           ) : null}
         </Col>
       </Row>
