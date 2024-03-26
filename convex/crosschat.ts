@@ -1,8 +1,62 @@
 import { mutation, query } from './_generated/server'
 import { ConvexError, v } from 'convex/values'
 import { verifyUser } from './user'
-import { validateCrossChatParticipation } from './lib/team'
-import { DELETED_USER } from './lib/helpers'
+import { findTeamOfUser, validateCrossChatParticipation, verifyTeam } from './lib/team'
+import { DELETED_USER, fulfillAndFlatten } from './lib/helpers'
+
+/**
+ * List the cross chats for a user's join requests (join requests that started with the user's consent)
+ */
+export const listForUser = query({
+  args: { competitionId: v.id('competitions') },
+  handler: async ({ db, auth }, args) => {
+    const user = await verifyUser(db, auth);
+    const joinRequests = await db.query('join_requests')
+      .withIndex('by_user', q => q.eq('user', user._id))
+      .collect()
+
+
+
+    return fulfillAndFlatten(
+      joinRequests
+        .filter(async item => {
+          const team = await db.get(item.team)
+          return team && team.competition == args.competitionId
+        })
+        .map(async item => {
+          const team = await verifyTeam(db, item.team)
+          if (!team) return []
+          return [{
+            joinRequest: item,
+            teamMembers: team.members
+          }]
+        })
+    )
+  }
+})
+
+/**
+ * List the cross chats for a team's invites (join requests that started with the consent of the team of this user)
+ */
+export const listForTeam = query({
+  args: { competitionId: v.id('competitions') },
+  handler: async ({ db, auth }, args) => {
+    const user = await verifyUser(db, auth);
+    const team = await findTeamOfUser(db, user, args.competitionId)
+    if (!team) return []
+
+    return fulfillAndFlatten(team.joinRequests
+        .map(async item => {
+          const team = await verifyTeam(db, item.team)
+          if (!team) return []
+          return [{
+            joinRequest: item,
+            teamMembers: team.members
+          }]
+        })
+    )
+  }
+})
 
 /**
  * Sends a message to a cross-chat regarding a join request

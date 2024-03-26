@@ -4,7 +4,7 @@ import { api } from '../../../convex/_generated/api'
 import { Id } from '../../../convex/_generated/dataModel'
 import React from 'react'
 import TeamMembers from '../../../Components/team/TeamMembers'
-import TeamChat from '../../../Components/TeamChat'
+import TeamChat from '../../../Components/chat/TeamChat'
 import { UserBubble } from '../../../Components/User'
 import Head from 'next/head'
 import CompetitionNavbar from '../../../Components/CompetitionNavbar'
@@ -37,7 +37,7 @@ export default function Team(props: any) {
           <h2>Join Requests</h2>
           <List className="p-2">
             {teamInfo?.joinRequests.map((request) => (
-              <li className="border list-unstyled">
+              <li key={request._id} className="border list-unstyled">
                 <UserBubble {...request.user} />
                 <p>{request.pitch}</p>
                 <Button onClick={() => handleAcceptJoin(request.user._id)}>

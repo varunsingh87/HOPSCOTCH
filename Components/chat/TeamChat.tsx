@@ -1,11 +1,10 @@
 import { Button, Container, Input, List } from 'reactstrap'
 import React, { useState, KeyboardEvent } from 'react'
 import { useMutation } from 'convex/react'
-import { api } from '../convex/_generated/api'
-import { Doc, Id } from '../convex/_generated/dataModel'
+import { api } from '../../convex/_generated/api'
+import { Id } from '../../convex/_generated/dataModel'
 import classnames from 'classnames'
-import { UserBubble } from './User'
-import { FunctionReference } from 'convex/server'
+import { UserBubble } from '../User'
 
 export default function TeamChat(props: {
   messages: Array<any>;

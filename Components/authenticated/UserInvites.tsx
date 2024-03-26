@@ -17,7 +17,7 @@ export default function UserInvites(props: {
     <>
       <h1>Invites</h1>
       {invites.map(invite => (
-        <Card>
+        <Card key={invite._id}>
           <CardBody>
             <ul>
               <TeamMembers members={invite.teammates.map(teammate => teammate.user)} />

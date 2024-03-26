@@ -1,8 +1,36 @@
-import { GenericDatabaseReader, GenericDatabaseWriter } from 'convex/server'
+import { Auth, GenericDatabaseReader, GenericDatabaseWriter } from 'convex/server'
 import { DataModel, Doc, Id } from '../_generated/dataModel'
 import { RequestValidity } from '../../lib/shared'
 import { ConvexError } from 'convex/values'
 import { convertToUserDocumentArray, fulfillAndFlatten } from './helpers'
+import { verifyUser } from '../user'
+
+/**
+ * Adds a join request and opens a cross chat with the pitch as the first message
+ * @param db The database object (write access required for DB INSERT)
+ * @param auth The authentication object for verifying the user
+ * @param inviterTeamId The id of the team that is considering/requesting the invite
+ * @param joinerId The id of the joiner that may switch teams
+ * @param pitch The first message in the cross chat between the joiner and the inviting team
+ * @param teamConsent Whether the join request is an invite
+ * @return {Id<'join_requests'>} Id of the new join request
+ */
+export async function recordJoinRequest(db: GenericDatabaseWriter<DataModel>, auth: Auth, inviterTeamId: Id<'teams'>, joinerId: Id<'users'>, pitch: string, teamConsent: boolean) {
+  const user = await verifyUser(db, auth);
+  const newJoinRequest = await db.insert('join_requests', {
+    team: inviterTeamId,
+    user: joinerId,
+    userConsent: !teamConsent,
+    teamConsent
+  })
+  await db.insert('join_messages', {
+    join_request: newJoinRequest,
+    sender: user._id,
+    message: pitch
+  })
+
+  return newJoinRequest
+}
 
 /**
  * Lists the teams and competition a user is in
@@ -182,8 +210,8 @@ export async function addUserToTeam(
 
 /**
  * Gets a list of the teams in a competition with the participants
- * @param db
- * @param competitionId
+ * @param db Database object (DB read access)
+ * @param competitionId Id of the competition
  */
 export async function listCompetitionTeams(
   db: GenericDatabaseReader<DataModel>,

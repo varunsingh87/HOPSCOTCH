@@ -4,7 +4,7 @@ import { verifyUser } from './user'
 import {
   findTeamOfUser,
   addUserToTeam,
-  validateTeamJoinRequest,
+  validateTeamJoinRequest, recordJoinRequest
 } from './lib/team'
 import { RequestValidity } from '../lib/shared'
 
@@ -115,13 +115,7 @@ export const requestJoin = mutation({
         throw new ConvexError('The request has already been made')
       case RequestValidity.VALID:
         // Record the join request
-        await db.insert('join_requests', {
-          team: inviterTeam._id,
-          user: user._id,
-          userConsent: true,
-          teamConsent: false,
-          pitch,
-        })
+        await recordJoinRequest(db, auth, inviterTeam._id, user._id, pitch, false)
         return RequestValidity.VALID
       case RequestValidity.INVITED:
         return await addUserToTeam(db, user, inviterTeam)
@@ -173,13 +167,8 @@ export const inviteToTeam = mutation({
         throw new ConvexError('The invite was already made')
       case RequestValidity.VALID:
         // Record the join request
-        return await db.insert('join_requests', {
-          team: inviterTeam._id,
-          user: joiner._id,
-          userConsent: false,
-          teamConsent: true,
-          pitch,
-        })
+        await recordJoinRequest(db, auth, inviterTeam._id, joiner._id, pitch, true)
+        return RequestValidity.VALID
       case RequestValidity.REQUESTED:
         return addUserToTeam(db, joiner, inviterTeam)
       default:

@@ -1,10 +1,10 @@
 import { Button, Container, Input, List } from 'reactstrap'
 import React, { useState, KeyboardEvent } from 'react'
 import { useMutation, useQuery } from 'convex/react'
-import { api } from '../convex/_generated/api'
+import { api } from '../../convex/_generated/api'
 import classnames from 'classnames'
-import { UserBubble } from './User'
-import { Id } from '../convex/_generated/dataModel'
+import { UserBubble } from '../User'
+import { Id } from '../../convex/_generated/dataModel'
 
 export default function CrossChat(props: {
   joinRequestId: Id<'join_requests'>
@@ -27,7 +27,6 @@ export default function CrossChat(props: {
 
   return (
     <Container>
-      <h1>Cross Chat</h1>
       <List className="p-0 mt-2">
         {messages?.map(msg => (
           <li
